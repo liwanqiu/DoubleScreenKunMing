@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/mainLayout_ID"
+              android:showDividers="middle"
+              android:divider="@drawable/dividershape"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="com.changfeng.tcpdemo.MainActivity">
+    <LinearLayout
+        android:background="@color/companyInfoBgColor"
+        android:padding="@dimen/company_info_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/companyInfo_ID"
+            android:text="@string/company_info_str"
+            android:textSize="@dimen/company_info_font_size"
+            android:textColor="@color/companyInfoTextColor"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/weather_ID"
+            android:visibility="gone"
+
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/currentTimeTextColor"
+            android:textSize="@dimen/current_time_font_size"
+            android:gravity="center"
+            android:id="@+id/currentTime_ID"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:background="@color/headlerBgColor"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <!--<TextView-->
+        <!--android:text="车次"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/headerFontColor"-->
+        <!--android:textSize="@dimen/header_font_size"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content" />-->
+        <!--<TextView-->
+            <!--android:text="编号"-->
+            <!--android:gravity="center"-->
+
+            <!--android:textColor="@color/headerFontColor"-->
+            <!--android:textSize="@dimen/header_font_size"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content" />-->
+        <!--<TextView-->
+            <!--android:text="发车时间"-->
+            <!--android:gravity="center"-->
+
+            <!--android:textColor="@color/headerFontColor"-->
+            <!--android:textSize="@dimen/header_font_size"-->
+            <!--android:layout_weight="1"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content" />-->
+
+    <!--</LinearLayout>-->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/item_layout_ID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

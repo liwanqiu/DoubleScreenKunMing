@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">昆明公交总公司站点发车信息屏</string>
+    <string name="company_info_str">昆明公交集团发车信息</string>
+    <!--sharePreference的名称-->
+    <string name="parameterSaved">parameterSaved</string>
+
+    //初始界面向其他activity传递的设置参数
+    <string name="ad_content">广告内容</string>
+    <string name="ad_font_size">广告内容字体大小</string>
+    <string name="bus_info_font_size">发车信息字体大小</string>
+    <string name="time_font_size">公司信息字体大小</string>
+
+    <string name="item_number">每屏个数</string>
+    <string name="item_circle">滚动周期</string>
+    <string name="service_IP">服务器地址</string>
+    <string name="port_number">端口号</string>
+    <string name="device_ID">设备ID</string>
+    <string name="item_num_positon">item个数位置</string>
+    <string name="bus_info_font_position">车辆信息字体大小位置</string>
+    <string name="ad_font_position">广告内容字体大小位置</string>
+    <string name="time_font_size_position">公司信息字体大小位置</string>
+
+
+    <string name="item_circle_position">循环周期位置</string>
+
+    //默认的一些参数值
+    <!--<string name="service_IP_default">192.168.1.102</string>-->
+    <!--<string name="port_number_default">50000</string>-->
+
+    <!--//监控数据是由设置完成按钮还是自动跳转的-->
+    <!--<string name="data_resource">数据发出者</string>-->
+    <!--<string name="non_change">数据由定时器发出</string>-->
+    <!--<string name="change">数据由设置按钮发出</string>-->
+    <string name="ad_content_str_default">助人为乐,服务大家！</string>
+
+    <string name="device_id">设备地址：%1$s</string>
+    <string name="server_address">服务器地址：%1$s</string>
+    <string name="server_port">服务器端口：%1$d</string>
+</resources>

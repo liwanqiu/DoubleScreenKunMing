@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="linearlayoutBg">#edf7da</color>
+//只以两种显示颜色数据时候的配色方案（customItemView控件中四中显示方式，设置为两种背景和字体颜色，）
+    <color name="itemBgColor">#a9b7e2</color>
+    <color name="itemFontColor">#eff7fa</color>
+    <color name="itemAnotherBgColor">#525786</color>
+    <color name="itemAnotherFontColor">#eff7fa</color>
+    <!--<color name="itemBgColor">#164976</color>-->
+    <!--<color name="itemFontColor">#e3a643</color>-->
+    <!--<color name="itemAnotherBgColor">#523460</color>-->
+    <!--<color name="itemAnotherFontColor">#24cb4b</color>-->
+
+//CustomItemView自定义控件的一些设置
+    //当接收到最新数据时
+    <color name="lastInputBgColor">#458cc9</color>
+    <color name="lastInputFontColor">#100f0f</color>
+    //当正常显示一条数据时
+    <color name="normalBgCorlor">#79bc49</color>
+    //显示广告时
+    <color name="advertiseBgCorlor">#576579</color>
+    <color name="advertiseFontCorlor">#ffffff</color>
+    //离发车还有不足指定时间时
+    <color name="willStartBgCorlor">#4b5515</color>
+//设置界面的配置信息
+//预览界面的配置信息（包含在主界面和自定义空间中）
+    <color name="preActivityBg">#2a2525</color>
+    <color name="dividerColor">#21329f</color>
+    <color name="dividerLineColor">#252f8c</color>
+//主显示界面的颜色配置信息
+    <color name="mainActivityBg">#2c2a2a</color>
+    //最顶部item，公司信息，当前时间
+    <color name="companyInfoBgColor">#fffe93</color>
+    <color name="companyInfoTextColor">#343634</color>
+    <color name="currentTimeTextColor">#575754</color>
+
+    <!--<color name="companyInfoBgColor">#253187</color>-->
+    <!--<color name="companyInfoTextColor">#3cd33c</color>-->
+    <!--<color name="currentTimeTextColor">#b7b216</color>-->
+
+
+</resources>

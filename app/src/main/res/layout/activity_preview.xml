@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/preview_mainLayout_ID"
+              android:showDividers="middle"
+              android:divider="@drawable/dividershape"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              tools:context="com.changfeng.tcpdemo.PreviewActivity">
+    <LinearLayout
+        android:background="@color/companyInfoBgColor"
+        android:padding="@dimen/company_info_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="@string/company_info_str"
+            android:id="@+id/companyInfomation_ID"
+            android:textSize="@dimen/company_info_font_size"
+            android:textColor="@color/companyInfoTextColor"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:textColor="@color/currentTimeTextColor"
+            android:textSize="@dimen/current_time_font_size"
+            android:gravity="center"
+            android:id="@+id/currentTime_ID"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/preview_item_layout_ID"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
