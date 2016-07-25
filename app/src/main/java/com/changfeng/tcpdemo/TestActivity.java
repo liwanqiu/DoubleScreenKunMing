@@ -32,13 +32,14 @@ public class TestActivity extends BaseActivity {
         public void onConnected(SocketClient client) {
             Log.i(TAG, "onConnected: " + client.getRemoteIP() + " " + client.getRemotePort());
             addDebugInfo(getString(R.string.server_connected, client.getRemoteIP(), client.getRemotePort()));
-            handler.postDelayed(reconnectRunnable, reconnectInterval * 1000);
+
         }
 
         @Override
         public void onDisconnected(SocketClient client) {
             Log.i(TAG, "onDisconnected: " + client.getRemoteIP() + " " + client.getRemotePort());
             addDebugInfo(getString(R.string.server_disconnected, client.getRemoteIP(), client.getRemotePort()));
+            handler.postDelayed(reconnectRunnable, reconnectInterval * 1000);
         }
 
         @Override
@@ -67,7 +68,7 @@ public class TestActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
         textView = (TextView) findViewById(R.id.test_text_view);
 
-        SharedPreferences preferences = getSharedPreferences(getString(R.string.parameterSaved), MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(SharedPref.name, MODE_PRIVATE);
         String serverAddress = preferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
         int port = preferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
 

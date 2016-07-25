@@ -20,16 +20,16 @@ import android.widget.Spinner;
 public class SetParameterActivity extends BaseActivity {
     private static final String TAG = "SetParameterActivity";
     //关于几个设置选项spinner的全变量
-    private Spinner itemNumSpinner, busInfoFontSizeSpinner, itemScrollCircle, adFontSizeSpinner,
+    private Spinner itemCountSpinner, busInfoFontSizeSpinner, itemScrollCircle, adFontSizeSpinner,
             timeFontSizeSpinner;
-    private EditText advertiseEdit;
-    private EditText deviceIDEdit, serviceIPEdit, portNumberEdit;
+    private EditText adEdit;
+    private EditText deviceIdEdit, serviceAddressEdit, serverPortEdit;
 
     //设置一些缺省值
-    private String adContent;//广告内容
+    private String ad;//广告内容
     private int adFontSize;//广告字体大小
-    private int itemNum;//每屏幕item个数
-    private int itemCircle;//滚动周期
+    private int itemCount;//每屏幕item个数
+    private int itemInterval;//滚动周期
     private int busInfoFontSize;//发车信息字体大小
     private int timeFontSize;
 
@@ -52,12 +52,12 @@ public class SetParameterActivity extends BaseActivity {
     }
 
     private void findViewID() {
-        deviceIDEdit = (EditText) findViewById(R.id.device_ID_ID);
-        serviceIPEdit = (EditText) findViewById(R.id.service_IP_ID);
-        portNumberEdit = (EditText) findViewById(R.id.port_number_ID);
-        advertiseEdit = (EditText) findViewById(R.id.advertise_ID);
+        deviceIdEdit = (EditText) findViewById(R.id.device_ID_ID);
+        serviceAddressEdit = (EditText) findViewById(R.id.service_IP_ID);
+        serverPortEdit = (EditText) findViewById(R.id.port_number_ID);
+        adEdit = (EditText) findViewById(R.id.advertise_ID);
 
-        itemNumSpinner = (Spinner) findViewById(R.id.item_num_spinner_ID);
+        itemCountSpinner = (Spinner) findViewById(R.id.item_num_spinner_ID);
         itemScrollCircle = (Spinner) findViewById(R.id.item_scroll_cycle_spinner_ID);
         busInfoFontSizeSpinner = (Spinner) findViewById(R.id.item_font_size_spinner_ID);
         adFontSizeSpinner = (Spinner) findViewById(R.id.advertise_font_size_spinner_ID);
@@ -77,11 +77,11 @@ public class SetParameterActivity extends BaseActivity {
         finishSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (deviceIDEdit.getText().toString().trim().isEmpty()) {
+                if (deviceIdEdit.getText().toString().trim().isEmpty()) {
                     showToast(R.string.message_device_id_not_correct);
                     return;
                 }
-                if (Integer.parseInt(portNumberEdit.getText().toString()) > 65535) {
+                if (Integer.parseInt(serverPortEdit.getText().toString()) > 65535) {
                     showToast(R.string.message_port_not_correct);
                     return;
                 }
@@ -93,55 +93,55 @@ public class SetParameterActivity extends BaseActivity {
 
     private void initValues() {
         SharedPreferences sharedPreferences = getSharedPreferences
-                (getString(R.string.parameterSaved), MODE_PRIVATE);
-        itemNum = sharedPreferences.getInt(getString(R.string.item_number), Constants.DEFAULT_ITEM_NUM);
+                (SharedPref.name, MODE_PRIVATE);
+        itemCount = sharedPreferences.getInt(SharedPref.ITEM_COUNT, Constants.DEFAULT_ITEM_COUNT);
 
-        busInfoFontSize = sharedPreferences.getInt(getString(R.string.bus_info_font_size),
+        busInfoFontSize = sharedPreferences.getInt(SharedPref.BUS_INFO_FONT_SIZE,
                 Constants.DEFAULT_BUS_INFO_FONT_SIZE);
-        itemCircle = sharedPreferences.getInt(getString(R.string.item_circle), Constants.DEFAULT_ITEM_CIRCLE);
+        itemInterval = sharedPreferences.getInt(SharedPref.ITEM_INTERVAL, Constants.DEFAULT_ITEM_INTERVAL);
 
-        adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size), Constants.DEFAULT_AD_FONT_SIZE);
-        adContent = sharedPreferences.getString(getString(R.string.ad_content), Constants.DEFAULT_AD_CONTENT);
+        adFontSize = sharedPreferences.getInt(SharedPref.AD_FONT_SIZE, Constants.DEFAULT_AD_FONT_SIZE);
+        ad = sharedPreferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
 
-        deviceId = sharedPreferences.getString(getString(R.string.device_ID),
+        deviceId = sharedPreferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID);
         port = sharedPreferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
         serverAddress = sharedPreferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
 
-        timeFontSize = sharedPreferences.getInt(getString(R.string.time_font_size), Constants.DEFAULT_TIME_FONT_SIZE);
+        timeFontSize = sharedPreferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
 
-        deviceIDEdit.setText(deviceId);
-        portNumberEdit.setText(String.valueOf(port));
-        serviceIPEdit.setText(serverAddress);
-        advertiseEdit.setText(adContent);
+        deviceIdEdit.setText(deviceId);
+        serverPortEdit.setText(String.valueOf(port));
+        serviceAddressEdit.setText(serverAddress);
+        adEdit.setText(ad);
         Log.i(TAG, "initValues() 设备ID：" + deviceId + " 端口号：" + port + "   ip:  " +
                 serverAddress + "  广告内容：" +
-                adContent);
+                ad);
     }
 
     private void savedParameter() {
-        SharedPreferences myShared = getSharedPreferences(getString(R.string.parameterSaved), Activity
+        SharedPreferences myShared = getSharedPreferences(SharedPref.name, Activity
                 .MODE_PRIVATE);
         SharedPreferences.Editor editor = myShared.edit();
-        editor.putInt(getString(R.string.item_number), Integer.parseInt(itemNumSpinner.getSelectedItem()
+        editor.putInt(SharedPref.ITEM_COUNT, Integer.parseInt(itemCountSpinner.getSelectedItem()
                 .toString()));
 
-        editor.putInt(getString(R.string.item_circle), Integer.parseInt(itemScrollCircle
+        editor.putInt(SharedPref.ITEM_INTERVAL, Integer.parseInt(itemScrollCircle
                 .getSelectedItem().toString()));
 
-        editor.putInt(getString(R.string.bus_info_font_size), Integer.parseInt(busInfoFontSizeSpinner
+        editor.putInt(SharedPref.BUS_INFO_FONT_SIZE, Integer.parseInt(busInfoFontSizeSpinner
                 .getSelectedItem().toString()));
 
-        editor.putInt(getString(R.string.time_font_size), Integer.parseInt(timeFontSizeSpinner
+        editor.putInt(SharedPref.TIME_FONT_SIZE, Integer.parseInt(timeFontSizeSpinner
                 .getSelectedItem().toString()));
-        editor.putInt(getString(R.string.ad_font_size), Integer.parseInt(adFontSizeSpinner
+        editor.putInt(SharedPref.AD_FONT_SIZE, Integer.parseInt(adFontSizeSpinner
                 .getSelectedItem().toString()));
 
 
-        editor.putString(getString(R.string.ad_content), advertiseEdit.getText().toString());
-        editor.putString(getString(R.string.device_ID), (deviceIDEdit.getText().toString()));
-        editor.putString(SharedPref.SERVER_ADDRESS, serviceIPEdit.getText().toString());
-        editor.putInt(SharedPref.SERVER_PORT, Integer.parseInt(portNumberEdit.getText()
+        editor.putString(SharedPref.AD, adEdit.getText().toString());
+        editor.putString(SharedPref.DEVICE_ID, (deviceIdEdit.getText().toString()));
+        editor.putString(SharedPref.SERVER_ADDRESS, serviceAddressEdit.getText().toString());
+        editor.putInt(SharedPref.SERVER_PORT, Integer.parseInt(serverPortEdit.getText()
                 .toString()));
         editor.apply();
     }
@@ -151,11 +151,11 @@ public class SetParameterActivity extends BaseActivity {
         //首先初始化路线个数
         ArrayAdapter<Integer> itemNumAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout, Constants.itemCountList);
         itemNumAdapter.setDropDownViewResource(R.layout.spinner_layout);
-        itemNumSpinner.setAdapter(itemNumAdapter);
-        itemNumSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        itemCountSpinner.setAdapter(itemNumAdapter);
+        itemCountSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                showToast("每屏显示线路个数：" + itemNumSpinner.getSelectedItem().toString());
+                showToast("每屏显示线路个数：" + itemCountSpinner.getSelectedItem().toString());
             }
 
             @Override
@@ -163,7 +163,7 @@ public class SetParameterActivity extends BaseActivity {
 
             }
         });
-        itemNumSpinner.setSelection(Constants.itemCountList.indexOf(itemNum));
+        itemCountSpinner.setSelection(Constants.itemCountList.indexOf(itemCount));
 
         //初始化每条信息滚动周期
         ArrayAdapter<Integer> itemScrollCircleAdapter = new ArrayAdapter<>(this, R.layout.spinner_layout,
@@ -181,7 +181,7 @@ public class SetParameterActivity extends BaseActivity {
 
             }
         });
-        itemScrollCircle.setSelection(Constants.itemScrollIntervalList.indexOf(itemCircle));
+        itemScrollCircle.setSelection(Constants.itemScrollIntervalList.indexOf(itemInterval));
 
         //发车信息的字体大小
         ArrayAdapter<Integer> fontSizeAdapter = new ArrayAdapter<>(this, R.layout

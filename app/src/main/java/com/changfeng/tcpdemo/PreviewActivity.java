@@ -32,11 +32,11 @@ public class PreviewActivity extends BaseActivity {
     private Timer updateTimeTimer;
     private String currentTime;
 
-    private String adContent;//广告内容
+    private String ad;//广告内容
     private int adFontSize;//广告字体大小
-    private int itemNum;//每屏幕item个数
+    private int itemCount;//每屏幕item个数
     private int busInfoFontSize;//发车信息字体大小
-    private int companyInfoFontSize; //公司信息字体大小
+    private int timeFontSize; //公司信息字体大小
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +75,27 @@ public class PreviewActivity extends BaseActivity {
 
 
         SharedPreferences preferences = getSharedPreferences
-                (getString(R.string.parameterSaved), MODE_PRIVATE);
+                (SharedPref.name, MODE_PRIVATE);
 
-        itemNum = preferences.getInt(getString(R.string.item_number), Constants.DEFAULT_ITEM_NUM);
-        busInfoFontSize = preferences.getInt(getString(R.string.bus_info_font_size), Constants.DEFAULT_BUS_INFO_FONT_SIZE);
-        adContent = preferences.getString(getString(R.string.ad_content), Constants.DEFAULT_AD_CONTENT);
-        adFontSize = preferences.getInt(getString(R.string.ad_font_size), Constants.DEFAULT_AD_FONT_SIZE);
-        companyInfoFontSize = preferences.getInt(getString(R.string.time_font_size), Constants.DEFAULT_TIME_FONT_SIZE);
+        itemCount = preferences.getInt(SharedPref.ITEM_COUNT, Constants.DEFAULT_ITEM_COUNT);
+        busInfoFontSize = preferences.getInt(SharedPref.BUS_INFO_FONT_SIZE, Constants.DEFAULT_BUS_INFO_FONT_SIZE);
+        ad = preferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
+        adFontSize = preferences.getInt(SharedPref.AD_FONT_SIZE, Constants.DEFAULT_AD_FONT_SIZE);
+        timeFontSize = preferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
 
 
-        Log.i(TAG, "initValues() 每屏个数：" + itemNum + " 车辆信息显示字体大小： " +
+        Log.i(TAG, "initValues() 每屏个数：" + itemCount + " 车辆信息显示字体大小： " +
                 busInfoFontSize +
                 " 广告内容：  " +
-                adContent + " 广告字体大小：" + adFontSize);
+                ad + " 广告字体大小：" + adFontSize);
 
 
     }
 
     private void initMainLayout() {
         previewItemLayout = (LinearLayout) findViewById(R.id.preview_item_layout_ID);
-        currentTimeText = (TextView) findViewById(R.id.currentTime_ID);
+        currentTimeText = (TextView) findViewById(R.id.text_view_current_time);
         companyInfo = (TextView) findViewById(R.id.companyInfomation_ID);
-//        mainLayout.setWeightSum(itemNum*WEIGHT + WEIGHT/2);
     }
 
     private void addItems() {
@@ -106,7 +105,7 @@ public class PreviewActivity extends BaseActivity {
         int bgColor;
         int fontColor;
 
-        for (int i = 0; i < itemNum; i++) {
+        for (int i = 0; i < itemCount; i++) {
             //初始化item的view
             CustomItemView newCustomItem = new CustomItemView(PreviewActivity.this);
             if (i % 2 == 0) {
@@ -124,7 +123,7 @@ public class PreviewActivity extends BaseActivity {
     }
 
     private void initUI() {
-        Log.i(TAG, "initUI开始执行 item num:" + itemNum);
+        Log.i(TAG, "initUI开始执行 item num:" + itemCount);
         addItems();
     }
 
@@ -133,19 +132,19 @@ public class PreviewActivity extends BaseActivity {
         String busNum = "4307";
         String time = "15:30";
         String adContent = "助人为乐，服务大家！";
-        companyInfo.setTextSize(companyInfoFontSize);
-        currentTimeText.setTextSize(companyInfoFontSize * 0.7f);
-        if (itemNum >= 2) {
-            for (int i = 0; i < itemNum; i++) {
+        companyInfo.setTextSize(timeFontSize);
+        currentTimeText.setTextSize(timeFontSize * 0.7f);
+        if (itemCount >= 2) {
+            for (int i = 0; i < itemCount; i++) {
                 CustomItemView view = itemViewsList.get(i);
                 Log.i(TAG, "itemList个数：" + itemViewsList.size());
-                if (i == itemNum - 1) {
-                    if (this.adContent.equals("")) {
+                if (i == itemCount - 1) {
+                    if (this.ad.equals("")) {
                         view.setAdvertise(adContent);
                         view.setAdvertiseFont(adFontSize);
                     } else {
-                        Log.i(TAG, "item的最后一个显示广告，广告内容：" + this.adContent + "  " + adFontSize);
-                        view.setAdvertise(this.adContent);
+                        Log.i(TAG, "item的最后一个显示广告，广告内容：" + this.ad + "  " + adFontSize);
+                        view.setAdvertise(this.ad);
                         view.setAdvertiseFont(adFontSize);
 
                     }

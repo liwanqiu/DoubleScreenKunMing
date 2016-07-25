@@ -54,10 +54,10 @@ public class MainActivity extends BaseActivity {
     InputDataParse inputDataParse;
     //接收到的自上一个act发过来的数据
 //    private Intent fromPreIntent;
-    private String advertiseContent;//广告内容
+    private String ad;//广告内容
     private int adFontSize;//广告字体大小
     private int itemNum;//每屏幕item个数
-    private int itemCircle;//滚动周期
+    private int itemInterval;//滚动周期
     private int busInfoFontSize;//发车信息字体大小
     private String serverAddress;//服务器地址
     private int serverPort;//端口号
@@ -288,9 +288,9 @@ public class MainActivity extends BaseActivity {
      * @description :
      */
     private void initMainLayout() {
-        itemLayout = (LinearLayout) findViewById(R.id.item_layout);
-        currentTimeText = (TextView) findViewById(R.id.currentTime_ID);
-        companyInfoText = (TextView) findViewById(R.id.companyInfo_ID);
+        itemLayout = (LinearLayout) findViewById(R.id.layout_bus_info);
+        currentTimeText = (TextView) findViewById(R.id.text_view_current_time);
+        companyInfoText = (TextView) findViewById(R.id.text_view_company_info);
 
         curWeather = (TextView) findViewById(R.id.weather_ID);
     }
@@ -345,21 +345,21 @@ public class MainActivity extends BaseActivity {
         inputParsedList = new LinkedList<>();
         handler = new Handler();
 
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.parameterSaved), Activity
+        SharedPreferences sharedPreferences = getSharedPreferences(SharedPref.name, Activity
                 .MODE_PRIVATE);
-        itemNum = sharedPreferences.getInt(getString(R.string.item_number), Constants.DEFAULT_ITEM_NUM);
-        busInfoFontSize = sharedPreferences.getInt(getString(R.string.bus_info_font_size),
+        itemNum = sharedPreferences.getInt(SharedPref.ITEM_COUNT, Constants.DEFAULT_ITEM_COUNT);
+        busInfoFontSize = sharedPreferences.getInt(SharedPref.BUS_INFO_FONT_SIZE,
                 Constants.DEFAULT_BUS_INFO_FONT_SIZE);
-        itemCircle = sharedPreferences.getInt(getString(R.string.item_circle), Constants.DEFAULT_ITEM_CIRCLE);
-        adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size), Constants.DEFAULT_AD_FONT_SIZE);
-        advertiseContent = sharedPreferences.getString(getString(R.string.ad_content), Constants.DEFAULT_AD_CONTENT);
+        itemInterval = sharedPreferences.getInt(SharedPref.ITEM_INTERVAL, Constants.DEFAULT_ITEM_INTERVAL);
+        adFontSize = sharedPreferences.getInt(SharedPref.AD_FONT_SIZE, Constants.DEFAULT_AD_FONT_SIZE);
+        ad = sharedPreferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
 
-        deviceId = sharedPreferences.getString(getString(R.string.device_ID),
+        deviceId = sharedPreferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID);
         serverPort = sharedPreferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
         serverAddress = sharedPreferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
 
-        timeFontSize = sharedPreferences.getInt(getString(R.string.time_font_size), Constants.DEFAULT_TIME_FONT_SIZE);
+        timeFontSize = sharedPreferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
 
 
     }
@@ -485,7 +485,7 @@ public class MainActivity extends BaseActivity {
                                     } else {
                                         // 如果不是按照最新数据显示则首先判断list中数据个数
                                         if (tempList.size() == 0) {
-                                            currentView.setAdvertise(advertiseContent);
+                                            currentView.setAdvertise(ad);
                                         } else {
                                             InputDataParse input = (InputDataParse) tempList.getFirst();
 //
@@ -511,7 +511,7 @@ public class MainActivity extends BaseActivity {
                                     }
                                 } else {
                                     //否则显示广告
-                                    currentView.setAdvertise(advertiseContent);
+                                    currentView.setAdvertise(ad);
                                     currentView.setAdvertiseFont(adFontSize);
                                 }
                             }
@@ -564,11 +564,11 @@ public class MainActivity extends BaseActivity {
                                             dataList.addLast(in);
                                         }
                                     } else {
-                                        item.setAdvertise(advertiseContent);
+                                        item.setAdvertise(ad);
                                     }
                                 } else {
                                     //否则显示广告
-                                    item.setAdvertise(advertiseContent);
+                                    item.setAdvertise(ad);
                                 }
                             }
                             long nomalEnd = System.nanoTime();
@@ -680,7 +680,7 @@ public class MainActivity extends BaseActivity {
                 });
             }
         };
-        updateTextLoopTimer.schedule(updateTextLoopTimerTask, 50, itemCircle * 1000);
+        updateTextLoopTimer.schedule(updateTextLoopTimerTask, 50, itemInterval * 1000);
     }
 
     private void stopUpdateTextLoopTimer() {

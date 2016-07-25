@@ -26,7 +26,7 @@
             android:textColor="@color/currentTimeTextColor"
             android:textSize="@dimen/current_time_font_size"
             android:gravity="center"
-            android:id="@+id/currentTime_ID"
+            android:id="@+id/text_view_current_time"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />

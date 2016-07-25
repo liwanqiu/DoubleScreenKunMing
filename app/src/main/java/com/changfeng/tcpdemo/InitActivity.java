@@ -69,8 +69,8 @@ public class InitActivity extends BaseActivity {
         startTimer();
 
         versionTextView.setText(getString(R.string.version, BuildConfig.VERSION_NAME));
-        SharedPreferences preferences = getSharedPreferences(getString(R.string.parameterSaved), MODE_PRIVATE);
-        deviceIdTextView.setText(getString(R.string.device_id, preferences.getString(getString(R.string.device_ID),
+        SharedPreferences preferences = getSharedPreferences(SharedPref.name, MODE_PRIVATE);
+        deviceIdTextView.setText(getString(R.string.device_id, preferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID)));
         serverPortTextView.setText(getString(R.string.server_port, preferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT)));
         serverAddressTextView.setText(getString(R.string.server_address, preferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS)));
@@ -117,7 +117,8 @@ public class InitActivity extends BaseActivity {
 
     private void startMainActivity() {
         Log.i(TAG, "startMainActivity: ");
-        startActivity(new Intent(this, MainActivity.class));
+//        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, BusInfoActivity.class));
     }
 
     @Override
