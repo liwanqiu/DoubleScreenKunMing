@@ -9,7 +9,7 @@
               android:layout_height="match_parent"
               tools:context="com.changfeng.tcpdemo.PreviewActivity">
     <LinearLayout
-        android:background="@color/companyInfoBgColor"
+        android:background="@color/titleBgColor"
         android:padding="@dimen/company_info_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

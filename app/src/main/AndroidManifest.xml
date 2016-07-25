@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.changfeng.tcpdemo"
-          xmlns:tools="http://schemas.android.com/tools"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.changfeng.tcpdemo"
 
     >
 
@@ -17,11 +17,11 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <!--添加天气预报相关权限-->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-<!--添加开机启动广播权限-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--添加开机启动广播权限-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -31,47 +31,45 @@
         android:label="@string/app_name"
         android:screenOrientation="landscape"
         android:supportsRtl="true"
-        tools:replace="android:icon"
-        >
+        tools:replace="android:icon">
         <activity
             android:name=".InitActivity"
-            android:screenOrientation="landscape"
-            >
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SetParameterActivity"
-                  android:screenOrientation="landscape">
+        <activity
+            android:name=".SetParameterActivity"
+            android:screenOrientation="landscape">
 
         </activity>
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscape"
-            >
-        </activity>
+            android:screenOrientation="landscape" />
+
+        <activity
+            android:name=".TestActivity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".PreviewActivity"
-            android:screenOrientation="landscape"
-            >
-        </activity>
+            android:screenOrientation="landscape" />
         <!--注册广播接收器-->
         <receiver android:name=".BootStartApplication">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
 
         </receiver>
         <!--<receiver android:name=".AutoUpdateApp">-->
-            <!--<intent-filter android:priority="1000">-->
-                <!--<action android:name="android.intent.action.MEDIA_MOUNTED"/>-->
-                <!--<action android:name="android.intent.action.MEDIA_UNMOUNTED"/>-->
-                <!--<data android:scheme="file"/>-->
+        <!--<intent-filter android:priority="1000">-->
+        <!--<action android:name="android.intent.action.MEDIA_MOUNTED"/>-->
+        <!--<action android:name="android.intent.action.MEDIA_UNMOUNTED"/>-->
+        <!--<data android:scheme="file"/>-->
 
-            <!--</intent-filter>-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
-
 
 
     </application>

@@ -1,7 +1,6 @@
 package com.changfeng.tcpdemo;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,14 +11,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.apistore.sdk.ApiCallBack;
 import com.baidu.apistore.sdk.ApiStoreSDK;
 import com.baidu.apistore.sdk.network.Parameters;
 import com.changfeng.tcpdemo.socketclient.helper.SocketResponsePacket;
 
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -36,9 +33,8 @@ import java.util.TimerTask;
 /**
  *
  */
-public class MainActivity extends Activity implements Serializable {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
-    private Toast mToast = null;//信息提示
 
     //网络部分所用的参数
     SocketClient socketClient;
@@ -55,32 +51,19 @@ public class MainActivity extends Activity implements Serializable {
     private boolean isUrgetToShow;//监控是否需要立刻显示
     private LinkedList<InputDataParse> inputParsedList;//接收到的数据原本
 
-    //解析数据时候所用到的变量
-//    private long timeStamp;//时间戳
-//    private int userID = 871997;//设备ID
     InputDataParse inputDataParse;
     //接收到的自上一个act发过来的数据
-    private Intent fromPreIntent;
+//    private Intent fromPreIntent;
     private String advertiseContent;//广告内容
     private int adFontSize;//广告字体大小
     private int itemNum;//每屏幕item个数
     private int itemCircle;//滚动周期
     private int busInfoFontSize;//发车信息字体大小
-    private String serviceIP;//服务器地址
-    private int portNumber;//端口号
-    private String deviceIDNum;//设备ID
+    private String serverAddress;//服务器地址
+    private int serverPort;//端口号
+    private String deviceId;//设备ID
     private int timeFontSize;//公司信息和时间字体大小
 
-    //sharedPreference默认的一些数据
-    private static final String AD_CONTENT = "服务社会，奉献大爱！";
-    private static final int AD_FONT_SIZE = 60;
-    private static final int TIME_FONT_SIZE = 30;
-    private static final int ITEM_NUM = 3;
-    private static final int ITEM_CIRCLE = 6;
-    private static final int BUS_INFO_FONT_SIZE = 50;
-    private static final String DEVICE_ID_NUMBER = "871997";
-    private static final int PORT_NUMBER = 50000;
-    private static final String SERVICE_IP = "100.20.176.13";
     //动态实现布局所用参数
     private LinearLayout itemLayout;
     private static final float WEIGHT = 2.0f;//用来设置item以及表头的比例，使其能够占满整个布局
@@ -103,7 +86,7 @@ public class MainActivity extends Activity implements Serializable {
         super.onCreate(savedInstancetate);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setBackgroundDrawableResource(R.color.mainActivityBg);
+        getWindow().setBackgroundDrawableResource(R.color.bgColor);
         setContentView(R.layout.activity_main);
 
         initValues();
@@ -138,7 +121,7 @@ public class MainActivity extends Activity implements Serializable {
 //                getWeather();
                 if (socketClient == null) {
 //                    socketClient = new SocketClient("100.20.176.13", 50000);//移动
-                    socketClient = new SocketClient(serviceIP, portNumber);
+                    socketClient = new SocketClient(serverAddress, serverPort);
                 }
                 socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(1000 * 60);
                 if (socketDelegate == null) {
@@ -152,7 +135,7 @@ public class MainActivity extends Activity implements Serializable {
                                 showToast("已经连接上服务器！");
                             }
                             //向服务器发送第一条请求，根据返回结果判断
-                            outputByte = dataToSend();
+                            outputByte = generateLoginData();
                             socketClient.send(outputByte);
                             Log.i(TAG, "客户端发送的数据：" + toHex(outputByte));
                         }
@@ -177,11 +160,10 @@ public class MainActivity extends Activity implements Serializable {
 //                        //获取传送过来的数据
                             inputByte = responsePacket.getData();
                             if (inputByte == null) {
-                                showToast("接收到的数据为空！");
-                                Log.w(TAG, "接收到数据为空！");
+                                showToast(R.string.message_receive_empty_data);
                                 return;
                             }
-                            Log.i(TAG, "从服务器接收到的数据： " + toHex(inputByte));
+                            Log.i(TAG, "onResponse() receive:" + toHex(inputByte));
 
                             inputDataParse = new InputDataParse(inputByte);
 
@@ -217,106 +199,6 @@ public class MainActivity extends Activity implements Serializable {
                     };
                 }
                 socketClient.registerSocketDelegate(socketDelegate);
-//                socketClient.registerSocketDelegate(new SocketClient.SocketDelegate() {
-//                    @Override
-//                    public void onConnected(SocketClient client) {
-//                        if(socketClient.isConnected()){
-//                            Log.i(TAG,"连接状态：" + socketClient.isConnected());
-//                            Log.i(TAG, "IP地址" + socketClient.getRemoteIP() + "端口：" + socketClient
-//                                    .getRemotePort());
-//                            showToast("已经连接上服务器！");
-//                        }
-//                        //向服务器发送第一条请求，根据返回结果判断
-////                        socketClient.send(data());
-//                        outputByte = dataToSend();
-//                        socketClient.send(outputByte);
-//                        Log.i(TAG,"客户端发送的数据" + toHex(outputByte));
-//                    }
-//                    @Override
-//                    public void onDisconnected(SocketClient client) {
-//                        if(socketClient.isDisconnected()){
-//                            Log.i(TAG,"ondisconnected函数调用次数：" + MainActivity.this.count++);
-//                            showToast("正在连接服务器！……");
-//                        }
-//                        Log.i(TAG,  socketClient.getState().toString());
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                socketClient.connect();
-//                            }
-//                        },10000);
-//                    }
-//                    @Override
-//                    public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
-////                        //获取传送过来的数据
-//                         inputByte = responsePacket.getData();
-//                        Log.i(TAG, toHex(inputByte));
-//
-//                        //首先判断接收到数据，然后再判断
-//                        if(inputByte != null) {
-////                            Toast.makeText(MainActivity.this,"接收到服务器发送的数据",Toast.LENGTH_SHORT)
-////                                    .show();
-//                            Log.i("接收数据不为空","判断后开始执行");
-//                            //判断1，
-//                            if (inputDataParse == null) {
-//                                inputDataParse = new InputDataParse(inputByte);
-//
-//                            } else {
-//                                inputDataParse = null;
-//                                inputDataParse = new InputDataParse(inputByte);
-//                            }
-//                            if(inputDataParse.inputParse()){
-//                                setText(inputDataParse);
-//                            }
-//
-//                            try {
-//                                if(file == null){
-//                                    file = new File("dataFromServer");
-//                                    file.createNewFile();
-//                                }
-//                                if (fileOutputStream == null) {
-//                                    fileOutputStream = new FileOutputStream(file);
-//                                    fileOutputStream = getApplication().openFileOutput(file
-//                                            .getName(), Context.MODE_ENABLE_WRITE_AHEAD_LOGGING);
-//                                }
-//                                fileOutputStream.write(inputByte);
-//                                Log.i(TAG,"文件路径为：" + file.getAbsolutePath() + ":" + file.getName
-//                                        () + file.getPath());
-//                                fileOutputStream.close();
-//                            }catch(IOException e){
-//                                e.printStackTrace();
-//                            }
-//
-//                        }else{
-//                            Toast.makeText(MainActivity.this,"没有接收到数据！",Toast.LENGTH_SHORT).show();
-//                        }
-//
-//                        /*if(inputByte != null){
-//                            if(inputDataParse ==null){
-//                                inputDataParse = new InputDataParse(inputByte);
-//                                inputDataParse.inputParse();
-//                            }else{
-//                                inputDataParse =null;
-//                                inputDataParse = new InputDataParse(inputByte);
-//                                inputDataParse.inputParse();
-//                            }
-//                            Log.i(TAG, "onResponse: set text:" + System.currentTimeMillis());
-////                            receiveDataText.setText(""+System.currentTimeMillis());
-//                            receiveDataText.setText("数据包类型：" + inputDataParse.packetType + "\n"
-//                                    + "发送数据时间：" + inputDataParse.timeOfSendData +"\n"
-//                                    + "序号：" + inputDataParse.num + "\n"
-//                                    + "线路号：" + inputDataParse.roadLineNum + "\n"
-//                                    + "车辆车次：" + inputDataParse.busLineNum + "\n"
-//                                    + "车辆自编号：" + inputDataParse.busNum + "\n"
-//                                    + "车辆发车时间：" + inputDataParse.timeOfStartBus + "\n"
-//                                    + "司机姓名：" + inputDataParse.nameOfDriver  + "\n"
-//                                    + "车次类型：" + inputDataParse.busType + "\n"
-//                                    +  "接收数据个数：" + MainActivity.COUNT++);
-//                        }else{
-//                            receiveDataText.setText("没有接受到任何数据，检查你的连接！");
-//                        }*/
-//                    }
-//                    });
                 socketClient.connect();
 
             }
@@ -399,7 +281,7 @@ public class MainActivity extends Activity implements Serializable {
      * @description :
      */
     private void initMainLayout() {
-        itemLayout = (LinearLayout) findViewById(R.id.item_layout_ID);
+        itemLayout = (LinearLayout) findViewById(R.id.item_layout);
         currentTimeText = (TextView) findViewById(R.id.currentTime_ID);
         companyInfoText = (TextView) findViewById(R.id.companyInfo_ID);
 
@@ -457,65 +339,23 @@ public class MainActivity extends Activity implements Serializable {
         isUrgetToShow = false;
         colorSelect = 0;
         inputParsedList = new LinkedList<>();
-        if (fromPreIntent == null) {
-            fromPreIntent = getIntent();
-        }
-        Log.i(TAG, "intent的值" + fromPreIntent.toString() + "intent里面有：" + fromPreIntent.hasExtra
-                ("发车信息字体大小"));
         handler = new Handler();
 
-        //获得到的上一个activity发送过来的配置数据
-//        dataResource = fromPreIntent.getStringExtra(getString(R.string.data_resource));
-        //如果数据是通过点击设置完成按钮发送过来的，则使用发送过老来的数据，否则使用保存的数据
-
-//        if (dataResource.equals(getString(R.string.change))){
-//            itemNum = Integer.parseInt(fromPreIntent.getStringExtra(getString( R.string
-//                    .item_number)));
-//            itemCircle = Integer.parseInt(fromPreIntent.getStringExtra(getString(R.string
-//                    .item_circle)));
-//            busInfoFontSize = Integer.parseInt(fromPreIntent.getStringExtra(getString(R
-//                    .string.bus_info_font_size)));
-//            advertiseContent = fromPreIntent.getStringExtra(getString(R.string.ad_content));
-//            adFontSize = Integer.parseInt(fromPreIntent.getStringExtra(getString(R.string
-//                    .ad_font_size)));
-//            //后期添加服务器服务器相关部分
-//            deviceIDNum = Integer.parseInt(fromPreIntent.getStringExtra(getString(R.string
-//                    .device_ID)));
-//            serviceIP = fromPreIntent.getStringExtra(getString(R.string.service_IP));
-//            portNumber = Integer.parseInt(fromPreIntent.getStringExtra(getString(R.string
-//                    .port_number)));
-//
-//        }else if(dataResource.equals(getString(R.string.non_change))){
-//            //
-//            SharedPreferences  sharedPreferences  = getSharedPreferences("parameterSaved",Activity
-//                    .MODE_PRIVATE);
-//            itemNum = sharedPreferences.getInt(getString(R.string.item_number),ITEM_NUM);
-//            busInfoFontSize = sharedPreferences.getInt(getString(R.string.bus_info_font_size),
-//                    BUS_INFO_FONT_SIZE);
-//            itemCircle  = sharedPreferences.getInt(getString(R.string.item_circle),ITEM_CIRCLE);
-//            adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size),AD_FONT_SIZE);
-//            advertiseContent = sharedPreferences.getString(getString(R.string.ad_content),AD_CONTENT);
-//
-//            deviceIDNum = sharedPreferences.getInt(getString(R.string.device_ID),DEVICE_ID_NUMBER);
-//            portNumber  =  sharedPreferences.getInt(getString(R.string.port_number),PORT_NUMBER);
-//            serviceIP  = sharedPreferences.getString(getString(R.string.service_IP),SERVICE_IP);
-//
-//        }
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.parameterSaved), Activity
                 .MODE_PRIVATE);
-        itemNum = sharedPreferences.getInt(getString(R.string.item_number), ITEM_NUM);
+        itemNum = sharedPreferences.getInt(getString(R.string.item_number), Constants.DEFAULT_ITEM_NUM);
         busInfoFontSize = sharedPreferences.getInt(getString(R.string.bus_info_font_size),
-                BUS_INFO_FONT_SIZE);
-        itemCircle = sharedPreferences.getInt(getString(R.string.item_circle), ITEM_CIRCLE);
-        adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size), AD_FONT_SIZE);
-        advertiseContent = sharedPreferences.getString(getString(R.string.ad_content), AD_CONTENT);
+                Constants.DEFAULT_BUS_INFO_FONT_SIZE);
+        itemCircle = sharedPreferences.getInt(getString(R.string.item_circle), Constants.DEFAULT_ITEM_CIRCLE);
+        adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size), Constants.DEFAULT_AD_FONT_SIZE);
+        advertiseContent = sharedPreferences.getString(getString(R.string.ad_content), Constants.DEFAULT_AD_CONTENT);
 
-        deviceIDNum = sharedPreferences.getString(getString(R.string.device_ID),
-                DEVICE_ID_NUMBER);
-        portNumber = sharedPreferences.getInt(getString(R.string.port_number), PORT_NUMBER);
-        serviceIP = sharedPreferences.getString(getString(R.string.service_IP), SERVICE_IP);
+        deviceId = sharedPreferences.getString(getString(R.string.device_ID),
+                Constants.DEFAULT_DEVICE_ID);
+        serverPort = sharedPreferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
+        serverAddress = sharedPreferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
 
-        timeFontSize = sharedPreferences.getInt(getString(R.string.time_font_size), TIME_FONT_SIZE);
+        timeFontSize = sharedPreferences.getInt(getString(R.string.time_font_size), Constants.DEFAULT_TIME_FONT_SIZE);
 
 
     }
@@ -775,10 +615,12 @@ public class MainActivity extends Activity implements Serializable {
     }
 
     private void stopInquiryInputTimer() {
-        inquiryInputTimer.cancel();
-        inquiryInputTimerTask.cancel();
-        inquiryInputTimerTask = null;
-        inquiryInputTimer = null;
+        if (inquiryInputTimer != null) {
+            inquiryInputTimer.cancel();
+        }
+        if (inquiryInputTimerTask != null) {
+            inquiryInputTimerTask.cancel();
+        }
     }
 
     //开始循环显示
@@ -809,7 +651,7 @@ public class MainActivity extends Activity implements Serializable {
                                                 .busNum, lastInput.timeOfStartBus);
                                         currentView.setNormalFontSize(busInfoFontSize);
                                     } else {
-                                        //如果不是按照最新数据显示则首先判断list中数据个数
+                                        // 如果不是按照最新数据显示则首先判断list中数据个数
                                         if (tempList.size() == 0) {
                                             currentView.setAdvertise(advertiseContent);
                                         } else {
@@ -1055,27 +897,18 @@ public class MainActivity extends Activity implements Serializable {
         }
 
         private boolean inputParse() {
-//            判断包头和长度
+            // 判断包头
             if (input[0] != 0x7E) {
                 showToast("服务器发送数据格式错误！");
                 return false;
             }
 
-//            if (input[0] == 0x7E) {
-//                int high =  (input[1] & 0xFF)<< 8;
-//                int low = (input[2] & 0xFF);
-//                int length = (low + high);
-//                if (input.length != length){
-//                    showToast("数据包长度不正确！");
-//                    return false;
-//                }
-
+            // 判断是否是发车排队信息
             if (input[4] != 0x59) {
                 Log.i(TAG, "inputParse() 不是发车屏数据，不处理");
                 return false;
             }
 
-//            if (input[4] == 0x59) {
             //包头段长度
             int highOfPacketHeadLen = (input[5] & 0xFF) << 8;
             int lowOfPacketHeadLen = (input[6] & 0xFF);
@@ -1247,48 +1080,6 @@ public class MainActivity extends Activity implements Serializable {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        SharedPreferences sharedPreferences = getSharedPreferences("parameterSaved", Activity
-                .MODE_PRIVATE);
-        itemNum = sharedPreferences.getInt(getString(R.string.item_number), ITEM_NUM);
-        busInfoFontSize = sharedPreferences.getInt(getString(R.string.bus_info_font_size),
-                BUS_INFO_FONT_SIZE);
-        itemCircle = sharedPreferences.getInt(getString(R.string.item_circle), ITEM_CIRCLE);
-        adFontSize = sharedPreferences.getInt(getString(R.string.ad_font_size), AD_FONT_SIZE);
-        advertiseContent = sharedPreferences.getString(getString(R.string.ad_content), AD_CONTENT);
-
-        deviceIDNum = sharedPreferences.getString(getString(R.string.device_ID),
-                DEVICE_ID_NUMBER);
-        portNumber = sharedPreferences.getInt(getString(R.string.port_number), PORT_NUMBER);
-        serviceIP = sharedPreferences.getString(getString(R.string.service_IP), SERVICE_IP);
-
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, " onstop函数执行");
-        fromPreIntent = null;
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.i(TAG, " onPause函数执行");
-        if (mToast != null) {
-            mToast.cancel();
-        }
-
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         Log.i(TAG, " ondestroy函数执行");
@@ -1311,15 +1102,9 @@ public class MainActivity extends Activity implements Serializable {
 
     }
 
-    private String toHex(byte[] data) {
-        StringBuilder builder = new StringBuilder();
-        for (byte b : data) {
-            builder.append(String.format(" %02x", b));
-        }
-        return builder.toString().toUpperCase();
-    }
 
-    private byte[] dataToSend() {
+
+    private byte[] generateLoginData() {
         outputByte = new byte[38];
         //1.固定开始部分
         outputByte[0] = 0x7E;
@@ -1340,12 +1125,12 @@ public class MainActivity extends Activity implements Serializable {
         //身份标识，原地址
         outputByte[10] = 0x03;
         outputByte[11] = 0x01;
-        int id = Integer.parseInt(deviceIDNum.trim());
+        int id = Integer.parseInt(deviceId.trim());
         byte firstByteID = (byte) ((id >> 24) & 0xFF);
         byte secondByteID = (byte) ((id >> 16) & 0xFF);
         byte thirdByteID = (byte) ((id >> 8) & 0xFF);
         byte fourByteID = (byte) (id & 0xFF);
-        Log.i(TAG, "dataTosend函数中的设备ID：" + deviceIDNum);
+        Log.i(TAG, "dataTosend函数中的设备ID：" + deviceId);
         outputByte[12] = firstByteID;
         outputByte[13] = secondByteID;
         outputByte[14] = thirdByteID;
@@ -1391,175 +1176,5 @@ public class MainActivity extends Activity implements Serializable {
 
     }
 
-    private void showToast(String text) {
-        if (mToast == null) {
-            mToast = Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT);
-        } else {
-            mToast.setText(text);
-            mToast.setDuration(Toast.LENGTH_SHORT);
-        }
-        mToast.show();
-    }
-//    private byte[] data(){
-//        dataByte = new byte[35];
-//        //1.固定开始部分
-//        dataByte[0] = 0x7E;
-//        //总长度
-//        dataByte[1] = 0x00;
-//        dataByte[2] = 0x23;
-//
-//        dataByte[3] = 0x01;
-//        //消息帧类型
-//        dataByte[4] = 0x01;
-//        //包头段长度
-//        dataByte[5] = 0x00;
-//        dataByte[6] = 0x12;
-//        //2.包头段
-//        //原类型
-//        dataByte[7] = 0x02;
-//
-//        dataByte[8] = 0x03;
-//        dataByte[9] = 0x0E;
-//        //身份标识，原地址
-//        dataByte[10] = 0x03;
-//        dataByte[11] = 0x01;
-//        byte firstByteID =(byte) ((userID >> 24) & 0x000000FF) ;
-//        byte secondByteID = (byte)((userID >> 16) & 0x000000FF);
-//        byte thirdByteID = (byte)((userID >> 8) & 0x000000FF);
-//        byte fourByteID = (byte)(userID & 0x000000FF);
-//        dataByte[12] = firstByteID;
-//        dataByte[13] = secondByteID;
-//        dataByte[14] = thirdByteID;
-//        dataByte[15] = fourByteID;
-//
-//       //回应字段
-//        dataByte[16] = 0x06;
-//        dataByte[17] = 0x03;
-//        dataByte[18] = 0x04;
-//        //时间戳
-//        dataByte[19] = 0x09;
-//        dataByte[20] = 0x01;
-//        timeStamp = System.currentTimeMillis();
-//        Log.i(TAG,"时间戳：" + timeStamp);
-//
-//        byte firstByte = (byte) ((timeStamp >> 24) & 0X000000FF);
-//        byte secondByte =(byte) ((timeStamp >>16) & 0X000000FF);
-//        byte thirdByte =(byte)( (timeStamp >> 8 ) & 0x000000FF);
-//        byte fourByte = (byte)(timeStamp & 0x000000FF);
-//
-//        dataByte[21] = firstByte;
-//        dataByte[22] = secondByte;
-//        dataByte[23] = thirdByte;
-//        dataByte[24] = fourByte;
-//        //3.包体段
-//        //身份标识
-//        dataByte[25] = 0x02;
-//        dataByte[26] = 0x01;
-//        dataByte[27] = firstByteID;
-//        dataByte[28] = secondByteID;
-//        dataByte[29] = thirdByteID;
-//        dataByte[30] = fourByteID;
-//        //登录原因
-//        dataByte[31] = 0x03;
-//        dataByte[32] = 0x03;
-//        dataByte[33] = 0x01;
-//        //4.包尾
-//        dataByte[34] = 0x7F;
-//        return dataByte;
-//    }
-//    private byte[] data{
-//        /*dataToSend = new byte[100];
-//        //1.固定开始部分
-//        dataToSend[0] = 0x7E;
-//
-//        dataToSend[1] = 0x00;
-//        dataToSend[2] = 0x26;
-//
-//        dataToSend[3] = 0x01;
-//        dataToSend[4] = 0x01;
-//        //包头段长度
-//        dataToSend[5] = 0x00;
-//        dataToSend[6] = 0x;
-//        //2.包头段
-//        //2.1源地址组织
-//        dataToSend[]=0x01;
-//        dataToSend[]=0x01;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//        //2.2原类型
-//        dataToSend[]=0x02;
-//        dataToSend[]=0x03;
-//        dataToSend[]=0x0;
-//        //2.3源地址
-//        byte firstByteID =(byte) ((userID >> 24) & 0x000000FF) ;
-//        byte secondByteID = (byte)((userID >> 16) & 0x000000FF);
-//        byte thirdByteID = (byte)((userID >> 8) & 0x000000FF);
-//        byte fourByteID = (byte)(userID & 0x000000FF);
-//        outputByte[12] = firstByteID;
-//        outputByte[13] = secondByteID;
-//        outputByte[14] = thirdByteID;
-//        outputByte[15] = fourByteID;
-//
-//        dataToSend[]=0x03;
-//        dataToSend[]=0x01;
-//        dataToSend[]=firstByteID;
-//        dataToSend[]=secondByteID;
-//        dataToSend[]=thirdByteID;
-//        dataToSend[]=fourByteID;
-//        //2.4目标类型
-//        dataToSend[]=0x04;
-//        dataToSend[]=0x03;
-//        dataToSend[]=0x;
-//        //2.5目标地址
-//        dataToSend[]=0x05;
-//        dataToSend[]=0x01;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//        dataToSend[]=0x;
-//
-//        //2.6回应字段
-//        dataToSend[]=0x06;
-//        dataToSend[]=0x03;
-//        dataToSend[]=0x03;
-//        //2.8顺序号
-//
-//
-//        //2.9时间戳包
-//        timeStamp = System.currentTimeMillis();
-//        Log.i(TAG,"时间戳：" + timeStamp);
-//
-//        byte firstByte = (byte) ((timeStamp >> 24) & 0X000000FF);
-//        byte secondByte =(byte) ((timeStamp >>16) & 0X000000FF);
-//        byte thirdByte =(byte)( (timeStamp >> 8 ) & 0x000000FF);
-//        byte fourByte = (byte)(timeStamp & 0x000000FF);
-//
-//        dataToSend[]=0x09;
-//        dataToSend[]=0x01;
-//        dataToSend[]= firstByte;
-//        dataToSend[]=secondByte;
-//        dataToSend[]=thirdByte;
-//        dataToSend[]=fourByte;
-//
-//        //3.包体段
-//        //3.1
-//        //3.2源id
-//        dataToSend[] = 0x02;
-//        dataToSend[] = 0x01;
-//        dataToSend[12] = firstByteID;
-//        dataToSend[13] = secondByteID;
-//        dataToSend[14] = thirdByteID;
-//        dataToSend[15] = fourByteID;
-//        //3.3登录原因
-//        dataToSend[] = 0x03;
-//        dataToSend[] = 0x03;
-//        dataToSend[] = 0x0E;
-//
-//
-//        //4.包尾
-//        dataToSend[]=0x0;*/
-////    }
 }
 

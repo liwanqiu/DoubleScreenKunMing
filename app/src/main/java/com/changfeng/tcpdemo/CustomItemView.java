@@ -55,7 +55,7 @@ public class CustomItemView extends LinearLayout {
 //        text_3.setTextSize(R.dimen.bus_info_font_size);
 
         text_4.setTypeface(CustomItemView.typefaceDefault);
-        text_4.setTextColor(ContextCompat.getColor(context,R.color.advertiseFontCorlor));
+        text_4.setTextColor(ContextCompat.getColor(context,R.color.advertiseFontColor));
 //        text_4.setTextSize(R.dimen.ad_font_size_default);
 
 //        setNumber(8,5,2,9);
