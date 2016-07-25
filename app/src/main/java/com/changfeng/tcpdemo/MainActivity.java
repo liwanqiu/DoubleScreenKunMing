@@ -43,7 +43,7 @@ public class MainActivity extends BaseActivity {
     private byte[] inputByte;    //接收到的数据
     private byte[] outputByte;    //发送的数据
     private HashSet<String> busInfoSet;//存放车辆线路信息，数据无重复
-    private LinkedList<CustomItemView> itemViewList;//存放item的list
+    private LinkedList<LinearLayout> itemViewList;//存放item的list
     private HashMap<String, CustomItemView> busLineToItemMap;//将路线和item的view绑定
     private HashMap<String, LinkedList<InputDataParse>> busLineToDataMap;//线路和该线路的数据绑定
     private ArrayList<String> totalBusLine;
@@ -81,29 +81,48 @@ public class MainActivity extends BaseActivity {
 //    private TimerTask  SendVirtualDataTask;
 //    private  ArrayList<byte[]> dataVertual;
 
+    BusInfoParser parser;
+
     @Override
-    protected void onCreate(Bundle savedInstancetate) {
-        super.onCreate(savedInstancetate);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setBackgroundDrawableResource(R.color.bgColor);
         setContentView(R.layout.activity_main);
 
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss");
+        parser = new BusInfoParser(this);
+        parser.setOnBusInfoListener(new BusInfoParser.OnBusInfoListener() {
+            @Override
+            public void onReceived(BusInfo busInfo) {
+                Log.i(TAG, "onReceived: bus info:" + busInfo.toString());
+                InputDataParse data = new InputDataParse();
+                data.busNum = busInfo.getBusCustomiseNum();
+                data.busLineNum = busInfo.getLineName();
+                data.timeOfStartBusLong = busInfo.getDepartureTime();
+                data.timeOfStartBus = dateFormat.format(busInfo.getDepartureTime());
+                data.timeOfStartBusTotal = "";
+                inputDataParse = data;
+                allocateItem(inputDataParse);
+                isNewInputFromServer = true;
+            }
+        });
+
+
         initValues();
         initMainLayout();
         initUI();
         initUIParameter();
-//        initVirtualData();
         startInquiryInputTimer();
         startUpdateTextLoopTimer();
-//        startSendDataTimer();
 
         Timer updateTimeTimer = new Timer();
+        final SimpleDateFormat dataFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E");
         TimerTask updateTimeTask = new TimerTask() {
             @Override
             public void run() {
-                SimpleDateFormat startBus = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                currentTime = startBus.format(new Date(System.currentTimeMillis()));
+                currentTime = dataFormat.format(new Date(System.currentTimeMillis()));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -118,9 +137,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void run() {
-//                getWeather();
                 if (socketClient == null) {
-//                    socketClient = new SocketClient("100.20.176.13", 50000);//移动
                     socketClient = new SocketClient(serverAddress, serverPort);
                 }
                 socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(1000 * 60);
@@ -128,31 +145,27 @@ public class MainActivity extends BaseActivity {
                     socketDelegate = new SocketClient.SocketDelegate() {
                         @Override
                         public void onConnected(SocketClient client) {
-                            if (socketClient.isConnected()) {
-                                Log.i(TAG, "连接状态：" + socketClient.isConnected());
-                                Log.i(TAG, "IP地址" + socketClient.getRemoteIP() + "端口：" + socketClient
-                                        .getRemotePort());
-                                showToast("已经连接上服务器！");
-                            }
-                            //向服务器发送第一条请求，根据返回结果判断
+                            Log.i(TAG, "onConnected: " + client.getRemoteIP() + " " + client.getRemotePort());
+                            showToast(R.string.server_connected, client.getRemoteIP(), client.getRemotePort());
+                            // 登录
                             outputByte = generateLoginData();
                             socketClient.send(outputByte);
-                            Log.i(TAG, "客户端发送的数据：" + toHex(outputByte));
                         }
 
                         @Override
-                        public void onDisconnected(SocketClient client) {
-                            Log.i(TAG, "IP地址：" + socketClient.getRemoteIP() + " 端口：" + socketClient
-                                    .getRemotePort());
+                        public void onDisconnected(final SocketClient client) {
+                            Log.i(TAG, "onDisconnected: " + client.getRemoteIP() + " " + client.getRemotePort());
+                            showToast(R.string.server_disconnected, client.getRemoteIP(), client.getRemotePort());
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (socketClient.isDisconnected() || socketClient.isConnecting()) {
+
+                                    if (socketClient.isDisconnected()) {
+                                        showToast(R.string.server_connecting, client.getRemoteIP(), client.getRemotePort());
                                         socketClient.connect();
-                                        showToast("正在连接服务器！……");
                                     }
                                 }
-                            }, 1000 * 60);
+                            }, 1000 * 10);
                         }
 
                         @Override
@@ -163,38 +176,32 @@ public class MainActivity extends BaseActivity {
                                 showToast(R.string.message_receive_empty_data);
                                 return;
                             }
-                            Log.i(TAG, "onResponse() receive:" + toHex(inputByte));
-
-                            inputDataParse = new InputDataParse(inputByte);
-
-                            //如果数据可以被解析，也就是说明，是发车排队包
-                            if (inputDataParse.inputParse()) {
-                                if (inputDataParse.busNum == null || inputDataParse.busNum.isEmpty()) {
-                                    Log.i(TAG, "onResponse: 自编号为空，不处理");
-                                    return;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    parser.read(inputByte);
                                 }
+                            });
 
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        //将数据加入数组以及暂存数组，
-//                                            inputParsedList.addLast(inputDataParse);
-                                        //判断有没有对应的item，应该将数据加入到那个线路的list中
-//                                            showToast("接收到的数据可以被解析！");
-                                        allocateItem(inputDataParse);
-                                        //标志位置位
-                                        isNewInputFromServer = true;
-//                                            isUrgetToShow = true;
 //
-//                                            Log.i(TAG,"最新收到的数据信息是；车次：" + inputDataParse
-//                                                    .busLineNum + "编号：" + inputDataParse
-//                                                    .busNum + " 发车时间：" + inputDataParse
-//                                                    .timeOfStartBus + "  " + inputDataParse
-//                                                    .timeOfStartBusLong + "   " +
-//                                                    inputDataParse.timeOfStartBusTotal);
-                                    }
-                                });
-                            }
+//                            inputDataParse = new InputDataParse(inputByte);
+//
+//                            //如果数据可以被解析，也就是说明，是发车排队包
+//                            if (inputDataParse.inputParse()) {
+//                                if (inputDataParse.busNum == null || inputDataParse.busNum.isEmpty()) {
+//                                    Log.i(TAG, "onResponse: 自编号为空，不处理");
+//                                    return;
+//                                }
+//
+//                                runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        allocateItem(inputDataParse);
+//                                        //标志位置位
+//                                        isNewInputFromServer = true;
+//                                    }
+//                                });
+//                            }
                         }
                     };
                 }
@@ -286,9 +293,6 @@ public class MainActivity extends BaseActivity {
         companyInfoText = (TextView) findViewById(R.id.companyInfo_ID);
 
         curWeather = (TextView) findViewById(R.id.weather_ID);
-//        itemLayout.setWeightSum(WEIGHT*itemNum);
-//        mainLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
-//        mainLayout.setDividerDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.dividershape, null));
     }
 
     private void addItem() {
@@ -319,7 +323,7 @@ public class MainActivity extends BaseActivity {
 
     private void initUIParameter() {
         for (int i = 0; i < itemViewList.size(); i++) {
-            CustomItemView item = itemViewList.get(i);
+            CustomItemView item = (CustomItemView) itemViewList.get(i);
             item.setAdvertiseFont(adFontSize);
             item.setNormalFontSize(busInfoFontSize);
         }
@@ -367,22 +371,22 @@ public class MainActivity extends BaseActivity {
         //遍历所有item，如果能够把路线加入则生成一个新的list维护该路线的数据.
         //思考，如果线路多于item个数怎么办？
         String line = input.busLineNum;
+
         for (int i = 0; i < itemViewList.size(); i++) {
-            CustomItemView currentItem = itemViewList.get(i);
+            CustomItemView currentItem = (CustomItemView) itemViewList.get(i);
             //首先判断是否已经有item和该路线绑定
             if (line.equals(currentItem.getBusLine())) {
                 busLineToDataMap.get(line).addFirst(input);
                 return;
             }
-            if (currentItem.setBusLine(line)) {
-                Log.i(TAG, "第" + (i + 1) + "个item，没有绑定路线，开始绑定");
 
+            if (currentItem.setBusLine(line)) {
                 LinkedList<InputDataParse> inputList = new LinkedList<>();
                 inputList.add(input);
                 busLineToItemMap.put(line, currentItem);
                 busLineToDataMap.put(line, inputList);
                 totalBusLine.add(input.busLineNum);
-                Log.i(TAG, "能够添加路线，路线名;" + line + "该路线对应的第" + (i + 1) + "个item：");
+                Log.i(TAG, "能够添加路线，路线名;" + line + " 该路线对应的第" + (i + 1) + "个item：");
                 for (int j = 0; j < busLineToDataMap.get(line).size(); j++) {
                     Log.i(TAG, "该路线对应的数据有：" + busLineToDataMap.get(line).get(j).busLineNum);
                 }
@@ -391,156 +395,6 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /**
-     *用来测试数据
-     */
-//    private void initVirtualData(){
-//        dataVertual  = new ArrayList<>();
-//        byte[]  input_1 = {0x7E,0x00,0x6D,0x01,0x59,0x00,0x24,0x02, 0x03,0x0A,
-//                0x03,0x01,0x00,0x00,(byte) 0x84,(byte)0xDB,
-//                0x04,0x03,0x0E,
-//                0x05,0x01,0x00,0x0D,0x4E,0x3D,
-//                0x06,0x03, 0x02,
-//                0x08,0x03,0x33,
-//                0x07,0x03,0x04,
-//                0x09,0x01,0x57,0x56,(byte) 0x90,0x6F,
-//                0x0A,
-//                0x03,0x01, 0x01, 0x02,0x00,0x02,0x02,0x01,0x00,0x00,(byte) 0x9E,(byte) 0xA2,
-//                0x03,0x04,0x04,0x36,0x31, (byte) 0xC2, (byte) 0xB7,
-//                0x05,0x04,0x04,0x34,0x33,0x30,0x33,
-//                0x06,0x01,0x57,0x56,(byte) 0x91,0x68,
-//                0x08,0x04,0x06, (byte) 0xBC,(byte) 0xDD,0x34,0x33,0x30,0x33,
-//                0x09,0x03,0x01,
-//                0x0B,0x04,0x14,0x31,0x36, 0x30, 0x36,0x30,0x37,0x31,0x37,0x31,0x31,0x31,0x39,0x36,0x32,0x35,0x39,0x30,0x31,0x31,0x35,
-//                0x7F} ;
-//
-//        byte []  input_2  = input_1.clone();
-//        //修改路线名称,一共五条线路
-//        input_2[57] = 0x32;
-//        byte []  input_3  = input_1.clone();
-//        input_3[57] = 0x33;
-//
-//        byte []  input_4 = input_1.clone();
-//        input_4[57] = 0x34;
-//
-//        byte []  input_5  = input_1.clone();
-//        input_5[57] = 0x35;
-//
-//        //修改发车时间和编号
-//        byte []  input_6 =   input_2.clone();
-//        //编号
-//        input_6[63] = 0x35;
-//        input_6[64] = 0x38;
-//        input_6[65] = 0x32;
-//        input_6[66] = 0x36;
-//        //时间
-//        input_6[69] =(byte) 0x97;
-//        input_6[70] = (byte) 0xE3;
-//        input_6[71] = 0x72;
-//        input_6[72] = 0x78;
-//
-//        byte []  input_7   = input_3.clone();
-//        //编号
-//        input_7[63] = 0x31;
-//        input_7[64] = 0x36;
-//        input_7[65] = 0x33;
-//        input_7[66] = 0x38;
-//        //时间
-//        input_7[69] =(byte) 0x97;
-//        input_7[70] = (byte) 0xD3;
-//        input_7[71] = 0x53;
-//        input_7[72] = 0x39;
-//
-//        byte []  input_8  = input_4.clone();
-//        //编号
-//        input_8[63] = 0x38;
-//        input_8[64] = 0x32;
-//        input_8[65] = 0x34;
-//        input_8[66] = 0x36;
-//        //时间
-//        input_8[69] =(byte) 0xE2;
-//        input_8[70] = (byte) 0xC3;
-//        input_8[71] = (byte) 0x83;
-//        input_8[72] = 0x27;
-//
-//        byte []  input_9 =   input_5.clone();
-//        //编号
-//        input_9[63] = 0x36;
-//        input_9[64] = 0x34;
-//        input_9[65] = 0x36;
-//        input_9[66] = 0x38;
-//        //时间
-//        input_9[69] =(byte) 0xE8;
-//        input_9[70] = (byte) 0xD1;
-//        input_9[71] = 0x48;
-//        input_9[72] = 0x29;
-//
-//        byte []  input_10 = new byte[109];
-//        input_10 = input_1.clone();
-//        //编号
-//        input_10[63] = 0x33;
-//        input_10[64] = 0x38;
-//        input_10[65] = 0x31;
-//        input_10[66] = 0x34;
-//        //时间
-//        input_10[69] =(byte) 0xB8;
-//        input_10[70] = (byte) 0xC3;
-//        input_10[71] = 0x53;
-//        input_10[72] = 0x41;
-//
-//        dataVertual.add(input_1);
-//        dataVertual.add(input_2);
-//        dataVertual.add(input_3);
-//        dataVertual.add(input_4);
-//        dataVertual.add(input_5);
-//        dataVertual.add(input_6);
-//        dataVertual.add(input_7);
-//        dataVertual.add(input_8);
-//        dataVertual.add(input_9);
-//        dataVertual.add(input_10);
-//
-//    }
-//    private void startSendDataTimer(){
-//        sendVirtualDataTimer = new Timer();
-//        SendVirtualDataTask = new TimerTask() {
-//            @Override
-//            public void run() {
-//                runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        int  index = (int) (Math.random()*10);
-//                        Log.i(TAG,"模拟数据的index：  " + index);
-//                        if (inputDataParse == null) {
-//                            inputDataParse = new InputDataParse(dataVertual.get(index));
-//                        } else {
-//                            inputDataParse = null;
-//                            inputDataParse = new InputDataParse(dataVertual.get(index));
-//                        }
-//                        if (inputDataParse.inputParse()){
-//                            allocateItem(inputDataParse);
-//                            isNewInputFromServer = true;
-//                            Log.i("模拟数据","最新收到的数据信息是；车次：" + inputDataParse
-//                                    .busLineNum + "编号：" + inputDataParse
-//                                    .busNum + " 发车时间：" + inputDataParse
-//                                    .timeOfStartBus + "  " + inputDataParse
-//                                    .timeOfStartBusLong + "   " +
-//                                    inputDataParse.timeOfStartBusTotal);
-//                        }
-//                    }
-//                });
-//
-//            }
-//        };
-//        sendVirtualDataTimer.schedule(SendVirtualDataTask,100,1000*3);
-//
-//    }
-//    private void stopSendDataTimer(){
-//        sendVirtualDataTimer.cancel();
-//        sendVirtualDataTimer = null;
-//        SendVirtualDataTask.cancel();
-//        SendVirtualDataTask = null;
-//
-//    }
 
     /**
      * 用于测试
@@ -565,26 +419,9 @@ public class MainActivity extends BaseActivity {
                              *首先确认属于那一条线路的数据，将其加入对应的list,如果没有对应的item,则不管
                              */
 
-//                            if (inputDataParse.inputParse()) {
-//                                String line = inputDataParse.busLineNum;
-//
-//                                if (totalBusLine.contains(inputDataParse.busLineNum)) {
-//                                    stopUpdateTextLoopTimer();//停止滚动
-//                                    LinkedList<InputDataParse> temp = busLineToDataMap.get(line);
-//                                    if (temp.contains(inputDataParse)) {
-//                                        temp.remove(inputDataParse);
-//                                        temp.addFirst(inputDataParse);
-//                                    } else {
-//                                        temp.addFirst(inputDataParse);
-//                                    }
-//                                    isUrgetToShow = true;
-//                                    startUpdateTextLoopTimer();
-//                                }
-//                            }
                             for (int k = 0; k < totalBusLine.size(); k++) {
-//                            if (inputDataParse.inputParse()) {
-//                                Log.i(TAG,"数据可以被解析，轮询开始！");
                                 String line = inputDataParse.busLineNum;
+                                Log.i(TAG, "run: " + "line:" + line + " " + (totalBusLine.get(k) == null) + " k:" + k);
                                 if (line.equals(totalBusLine.get(k))) {
                                     stopUpdateTextLoopTimer();//停止滚动
                                     LinkedList<InputDataParse> temp = busLineToDataMap.get(line);
@@ -597,14 +434,9 @@ public class MainActivity extends BaseActivity {
 
                                     isUrgetToShow = true;
                                     startUpdateTextLoopTimer();
-
-//                            }
                                 }
                             }
-
-//                            showToast("轮询结束，更新了数据");
                             isNewInputFromServer = false;
-                            Log.i(TAG, "startInquiryInputTimer执行结束(更新UI)");
                         }
 
                     }
@@ -638,7 +470,7 @@ public class MainActivity extends BaseActivity {
                         if (isUrgetToShow) {
                             long urgentStart = System.nanoTime();
                             for (int i = 0; i < itemViewList.size(); i++) {
-                                CustomItemView currentView = itemViewList.get(i);
+                                CustomItemView currentView = (CustomItemView) itemViewList.get(i);
                                 //首先判断是否有路线占有该item,没有就显示广告
                                 if (currentView.getBusLine() != null) {
                                     String line = currentView.getBusLine();
@@ -657,17 +489,15 @@ public class MainActivity extends BaseActivity {
                                         } else {
                                             InputDataParse input = (InputDataParse) tempList.getFirst();
 //
-//                                                  currentView.setNormalText(input.busLineNum,
-//                                                          input.busNum,input.timeOfStartBus);
 //                                                  如果距离发车时间很近，则
                                             if (input.timeOfStartBusLong >= (System.currentTimeMillis() / 1000 - 120)) {
-                                                itemViewList.get(i).setWillStartText(input
+                                                ((CustomItemView) itemViewList.get(i)).setWillStartText(input
                                                         .busLineNum, input.busNum, input.timeOfStartBus);
-                                                itemViewList.get(i).setNormalFontSize(busInfoFontSize);
+                                                ((CustomItemView) itemViewList.get(i)).setNormalFontSize(busInfoFontSize);
                                             } else {
-                                                itemViewList.get(i).setNormalText(input.busLineNum,
+                                                ((CustomItemView) itemViewList.get(i)).setNormalText(input.busLineNum,
                                                         input.busNum, input.timeOfStartBus);
-                                                itemViewList.get(i).setNormalFontSize
+                                                ((CustomItemView) itemViewList.get(i)).setNormalFontSize
                                                         (busInfoFontSize);
                                             }
                                             //显示过后将第一个放到最后
@@ -708,10 +538,10 @@ public class MainActivity extends BaseActivity {
                             for (int i = 0; i < itemViewList.size(); i++) {
                                 Log.i(TAG, "无需紧急显示时候，正常显示，开始执行！");
 
-                                CustomItemView item = itemViewList.get(i);
+                                CustomItemView item = (CustomItemView) itemViewList.get(i);
                                 //如果item对应一个路线则按照几种显示方式进行显示
                                 if (item.getBusLine() != null) {
-                                    String line = itemViewList.get(i).getBusLine();
+                                    String line = ((CustomItemView) itemViewList.get(i)).getBusLine();
                                     LinkedList dataList = busLineToDataMap.get(line);
                                     //该路线的数据不为0个
                                     if (dataList.size() != 0) {
@@ -805,6 +635,7 @@ public class MainActivity extends BaseActivity {
                                             temp.add(tempList.get(k));
                                         }
                                     }
+
                                 }
                                 tempList.removeAll(temp);
                             }
@@ -877,10 +708,13 @@ public class MainActivity extends BaseActivity {
         int lenOfSubPacket;//负责记录该子包的长度
         private byte[] input = null;//持有接收到的数据的备份；
 
-        InputDataParse(@NonNull byte[] input) {
+        private InputDataParse(@NonNull byte[] input) {
             this.input = input;
             this.index = 0;
             this.timeOfStartBusLong = 0L;
+        }
+
+        private InputDataParse() {
         }
 
         @Override
@@ -1101,7 +935,6 @@ public class MainActivity extends BaseActivity {
         stopUpdateTextLoopTimer();
 
     }
-
 
 
     private byte[] generateLoginData() {

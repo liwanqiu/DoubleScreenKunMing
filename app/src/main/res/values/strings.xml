@@ -34,6 +34,7 @@
     <string name="device_id">设备地址：%1$s</string>
     <string name="server_address">服务器地址：%1$s</string>
     <string name="server_port">服务器端口：%1$d</string>
+    <string name="server_connecting">正在连接服务器：地址：%1$s 端口：%2$d</string>
     <string name="server_connected">服务器连接成功 地址：%1$s 端口：%2$d</string>
     <string name="server_disconnected">服务器已经断开 地址：%1$s 端口：%2$d</string>
 

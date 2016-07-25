@@ -79,7 +79,7 @@ public class TestActivity extends BaseActivity {
             @Override
             public void onReceived(BusInfo busInfo) {
                 Log.i(TAG, "onReceived: bus info:" + busInfo.toString());
-                addDebugInfo(busInfo.toString());
+                addDebugInfo(busInfo.toHumanString());
             }
         });
     }

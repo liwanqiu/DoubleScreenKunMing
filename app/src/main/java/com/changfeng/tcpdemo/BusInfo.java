@@ -1,5 +1,8 @@
 package com.changfeng.tcpdemo;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by chang on 2016/7/25.
  */
@@ -40,6 +43,12 @@ public class BusInfo {
 
     @Override
     public String toString() {
-        return "time:" + departureTime + " name:" + lineName + " num:" + busCustomiseNum;
+        return departureTime + " " + busCustomiseNum + " " + lineName;
+    }
+
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+
+    public String toHumanString() {
+        return simpleDateFormat.format(new Date(departureTime)) + " " + busCustomiseNum + " " + lineName;
     }
 }
