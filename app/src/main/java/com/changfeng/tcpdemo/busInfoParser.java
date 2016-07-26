@@ -64,7 +64,7 @@ public class BusInfoParser {
 
     private void processDo(byte data) {
         pos++;
-        if (pos > MAX_FRAME_LEN || receiveState == STATE_NO_RECEIVE) {
+        if (pos >= MAX_FRAME_LEN || receiveState == STATE_NO_RECEIVE) {
             pos = 0;
             receiveState = STATE_NO_RECEIVE;
         }

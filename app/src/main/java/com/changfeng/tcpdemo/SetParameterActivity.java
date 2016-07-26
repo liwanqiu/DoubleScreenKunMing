@@ -86,7 +86,7 @@ public class SetParameterActivity extends BaseActivity {
                     return;
                 }
                 savedParameter();
-                startActivity(new Intent(SetParameterActivity.this, MainActivity.class));
+                finish();
             }
         });
     }

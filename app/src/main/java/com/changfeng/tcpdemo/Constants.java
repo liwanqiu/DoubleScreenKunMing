@@ -7,7 +7,7 @@ import java.util.List;
  * Created by chang on 2016/7/23.
  */
 public class Constants {
-    public static final String DEFAULT_AD = "服务大家，快乐你我！";
+    public static final String DEFAULT_AD = "服务大家，快乐你我他！";
     public static final int DEFAULT_AD_FONT_SIZE = 80;
     public static final int DEFAULT_ITEM_COUNT = 5;
     public static final int DEFAULT_ITEM_INTERVAL = 6;

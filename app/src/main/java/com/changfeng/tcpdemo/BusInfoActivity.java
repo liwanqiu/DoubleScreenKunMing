@@ -3,6 +3,7 @@ package com.changfeng.tcpdemo;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,9 +51,13 @@ public class BusInfoActivity extends BaseActivity {
         @Override
         public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
             final byte[] data = responsePacket.getData();
+            Log.i(TAG, "onResponse: start to hex:" + System.currentTimeMillis());
             String dataText = toHex(data);
+            Log.i(TAG, "onResponse: finish to hex, and start to parse: " + System.currentTimeMillis());
             Log.i(TAG, "onResponse: " + dataText);
             parser.read(data);
+            Log.i(TAG, "onResponse: finish parse:" + System.currentTimeMillis());
+
         }
     };
 
@@ -185,7 +190,6 @@ public class BusInfoActivity extends BaseActivity {
         byte secondByteID = (byte) ((id >> 16) & 0xFF);
         byte thirdByteID = (byte) ((id >> 8) & 0xFF);
         byte fourByteID = (byte) (id & 0xFF);
-        Log.i(TAG, "dataTosend函数中的设备ID：" + deviceId);
         outputByte[12] = firstByteID;
         outputByte[13] = secondByteID;
         outputByte[14] = thirdByteID;
@@ -202,7 +206,6 @@ public class BusInfoActivity extends BaseActivity {
         outputByte[22] = 0x09;
         outputByte[23] = 0x01;
         long timeStamp = System.currentTimeMillis() / 1000;
-        Log.i(TAG, "sendTodata中时间戳：" + timeStamp);
 
         byte firstByte = (byte) ((timeStamp >> 24) & 0xFF);
         byte secondByte = (byte) ((timeStamp >> 16) & 0xFF);
