@@ -122,8 +122,8 @@ public class MultiScrollNumber extends LinearLayout {
     private void resetView() {
         mTargetNumbers.clear();
         mPrimaryNumbers.clear();
-        mScrollNumbers.clear();
-        removeAllViews();
+//        mScrollNumbers.clear();
+//        removeAllViews();
     }
 
 
@@ -196,16 +196,27 @@ public class MultiScrollNumber extends LinearLayout {
             mPrimaryNumbers.add(0);
         }
 
-        for (int i = mTargetNumbers.size() - 1; i >= 0; i--) {
+        while (mScrollNumbers.size() < count) {
             ScrollNumber scrollNumber = new ScrollNumber(mContext);
-            scrollNumber.setTextColor(mTextColors[i % mTextColors.length]);
+            scrollNumber.setTextColor(mTextColors[0]);
             scrollNumber.setTextSize(mTextSize);
             if (!TextUtils.isEmpty(mFontFileName))
                 scrollNumber.setTextFont(mFontFileName);
-//            Log.i(TAG, "setNumber: from:" + mPrimaryNumbers.get(i) + " to:" + mTargetNumbers.get(i));
-            scrollNumber.setNumber(mPrimaryNumbers.get(i), mTargetNumbers.get(i), i * 100);
             mScrollNumbers.add(scrollNumber);
             addView(scrollNumber);
+        }
+
+
+        for (int i = mTargetNumbers.size() - 1; i >= 0; i--) {
+//            ScrollNumber scrollNumber = new ScrollNumber(mContext);
+//            scrollNumber.setTextColor(mTextColors[i % mTextColors.length]);
+//            scrollNumber.setTextSize(mTextSize);
+//            if (!TextUtils.isEmpty(mFontFileName))
+//                scrollNumber.setTextFont(mFontFileName);
+////            Log.i(TAG, "setNumber: from:" + mPrimaryNumbers.get(i) + " to:" + mTargetNumbers.get(i));
+            mScrollNumbers.get(i).setNumber(mPrimaryNumbers.get(i), mTargetNumbers.get(i), i * 100);
+//            mScrollNumbers.add(scrollNumber);
+//            addView(scrollNumber);
         }
 
         lastVal = to;
