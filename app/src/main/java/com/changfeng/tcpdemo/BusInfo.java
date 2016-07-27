@@ -46,8 +46,6 @@ public class BusInfo {
         return departureTime + " " + busCustomiseNum + " " + lineName;
     }
 
-//    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-
     public String toHumanString() {
         return TimeUtil.dateFormat.format(new Date(departureTime)) + " " + busCustomiseNum + " " + lineName;
     }

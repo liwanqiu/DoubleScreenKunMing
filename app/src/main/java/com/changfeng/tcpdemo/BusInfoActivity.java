@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.changfeng.tcpdemo.interf.OnWeatherChangedListener;
 import com.changfeng.tcpdemo.socketclient.helper.SocketResponsePacket;
 
 import java.util.ArrayList;
@@ -17,14 +18,35 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by chang on 2016/7/25.
  */
 public class BusInfoActivity extends BaseActivity {
     public static final String TAG = "BusInfoActivity";
 
+    @BindView(R.id.text_view_city)
+    TextView cityTextView;
+    @BindView(R.id.text_view_quality)
+    TextView qualityTextView;
+    @BindView(R.id.text_view_pm25)
+    TextView pm25TextView;
+    @BindView(R.id.text_view_pm10)
+    TextView pm10TextView;
+    @BindView(R.id.text_view_cond)
+    TextView condTextView;
+    @BindView(R.id.text_view_max_temperature)
+    TextView maxTemperatureTextView;
+    @BindView(R.id.text_view_min_temperature)
+    TextView minTemperatureTextView;
+    @BindView(R.id.text_view_wind)
+    TextView windTextView;
+
     // 是否使用模拟数据
     public static final String EMULATE = "bus_info_activity_emulate";
+
 
     private LinearLayout busInfoLayout;
     private BusInfoView busInfoView;
@@ -91,10 +113,63 @@ public class BusInfoActivity extends BaseActivity {
 
     private BusInfoParser parser;
 
+    private OnWeatherChangedListener weatherChangedListener = new OnWeatherChangedListener() {
+
+        @Override
+        public void onCityChanged(String city) {
+            Log.i(TAG, "onCityChanged: " + city);
+            cityTextView.setText(city);
+        }
+
+        @Override
+        public void onQualityChanged(String quality) {
+            Log.i(TAG, "onQualityChanged: " + quality);
+            qualityTextView.setText(getString(R.string.air_quality, quality));
+        }
+
+        @Override
+        public void onPm25Changed(String pm25) {
+            Log.i(TAG, "onPm25Changed: " + pm25);
+            pm25TextView.setText(getString(R.string.pm_25, pm25));
+        }
+
+        @Override
+        public void onPm10Changed(String pm10) {
+            Log.i(TAG, "onPm10Changed: " + pm10);
+            pm10TextView.setText(getString(R.string.pm_10, pm10));
+        }
+
+        @Override
+        public void onCondChanged(String day, String night) {
+            Log.i(TAG, "onCondChanged: " + day + " " + night);
+            condTextView.setText(getString(R.string.cond, day, night));
+        }
+
+        @Override
+        public void onMaxTemperatureChanged(String t) {
+            Log.i(TAG, "onMaxTemperatureChanged: " + t);
+            maxTemperatureTextView.setText(getString(R.string.max_temperature, t));
+
+        }
+
+        @Override
+        public void onMinTemperatureChanged(String t) {
+            Log.i(TAG, "onMinTemperatureChanged: " + t);
+            minTemperatureTextView.setText(getString(R.string.min_temperature, t));
+        }
+
+        @Override
+        public void onWindChanged(String wind) {
+            Log.i(TAG, "onWindChanged: " + wind);
+            windTextView.setText(getString(R.string.wind, wind));
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bus_info);
+        ButterKnife.bind(this);
 
 
         SharedPreferences preferences = getSharedPreferences(SharedPref.name, MODE_PRIVATE);
@@ -115,6 +190,15 @@ public class BusInfoActivity extends BaseActivity {
         busInfoView = new BusInfoView(this, busInfoLayout
         );
 
+        int weatherTextSize = timeFontSize / 2;
+        cityTextView.setTextSize(weatherTextSize);
+        qualityTextView.setTextSize(weatherTextSize);
+        pm10TextView.setTextSize(weatherTextSize);
+        pm25TextView.setTextSize(weatherTextSize);
+        condTextView.setTextSize(weatherTextSize);
+        maxTemperatureTextView.setTextSize(weatherTextSize);
+        minTemperatureTextView.setTextSize(weatherTextSize);
+        windTextView.setTextSize(weatherTextSize);
         tcpConnectedColor = ContextCompat.getColor(this, R.color.tcp_connected);
         tcpConnectingColor = ContextCompat.getColor(this, R.color.tcp_connecting);
         tcpDisconnectedColor = ContextCompat.getColor(this, R.color.tcp_disconnected);
@@ -149,6 +233,10 @@ public class BusInfoActivity extends BaseActivity {
         if (isEmulate) {
             emulateBusInfoList = generateBusInfoList();
         }
+
+        cityTextView.setText(getString(R.string.city));
+        WeatherManager.getInstance().registerWeatherChangeListener(weatherChangedListener);
+        WeatherManager.getInstance().setCityName(getString(R.string.city_en));
     }
 
 
@@ -165,6 +253,10 @@ public class BusInfoActivity extends BaseActivity {
             socketClient.removeSocketDelegate(socketDelegate);
             socketClient.disconnect();
         }
+
+        WeatherManager.getInstance().stopWeatherFetchingTimer();
+
+
     }
 
 
@@ -180,6 +272,8 @@ public class BusInfoActivity extends BaseActivity {
             socketClient.registerSocketDelegate(socketDelegate);
             connect();
         }
+
+        WeatherManager.getInstance().startWeatherFetchingTimer();
     }
 
     public void startTimer() {

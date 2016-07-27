@@ -7,7 +7,6 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -62,7 +61,7 @@ public class ScrollNumber extends View {
     }
 
     public void setNumber(final int from, final int to, long delay) {
-        Log.i(TAG, "setNumber: from:" + from + " to:" + to);
+//        Log.i(TAG, "setNumber: from:" + from + " to:" + to);
         postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -73,7 +72,7 @@ public class ScrollNumber extends View {
                 setFromNumber(from);
                 setTargetNumber(to);
 
-                Log.i(TAG, "setNumber: mCurNum:" + mCurNum + " mTargetNum:" + mTargetNum);
+//                Log.i(TAG, "setNumber: mCurNum:" + mCurNum + " mTargetNum:" + mTargetNum);
 
 
             }
@@ -187,7 +186,7 @@ public class ScrollNumber extends View {
     }
 
     private void setFromNumber(int number) {
-        Log.i(TAG, "setFromNumber: number:" + number);
+//        Log.i(TAG, "setFromNumber: number:" + number);
         if (number < 0 || number > 9)
             throw new RuntimeException("invalidate number , should in [0,9]");
         calNum(number);
@@ -201,7 +200,7 @@ public class ScrollNumber extends View {
         number = number == 10 ? 0 : number;
         mCurNum = number;
         mNextNum = number + 1 == 10 ? 0 : number + 1;
-        Log.i(TAG, "calNum: mCurNum:" + mCurNum + " mTartNum:" + mTargetNum);
+//        Log.i(TAG, "calNum: mCurNum:" + mCurNum + " mTartNum:" + mTargetNum);
     }
 
     private Runnable mScrollRunnable = new Runnable() {
@@ -227,7 +226,7 @@ public class ScrollNumber extends View {
 
 
     public void setTargetNumber(int nextNum) {
-        Log.i(TAG, "setTargetNumber: mTargetNum:" + nextNum);
+//        Log.i(TAG, "setTargetNumber: mTargetNum:" + nextNum);
         this.mTargetNum = nextNum;
         invalidate();
     }

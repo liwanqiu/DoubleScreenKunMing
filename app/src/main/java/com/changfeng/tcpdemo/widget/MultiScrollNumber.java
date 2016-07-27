@@ -214,7 +214,7 @@ public class MultiScrollNumber extends LinearLayout {
 //            if (!TextUtils.isEmpty(mFontFileName))
 //                scrollNumber.setTextFont(mFontFileName);
 ////            Log.i(TAG, "setNumber: from:" + mPrimaryNumbers.get(i) + " to:" + mTargetNumbers.get(i));
-            mScrollNumbers.get(i).setNumber(mPrimaryNumbers.get(i), mTargetNumbers.get(i), i * 100);
+            mScrollNumbers.get(mTargetNumbers.size() - 1 - i).setNumber(mPrimaryNumbers.get(i), mTargetNumbers.get(i), i * 100);
 //            mScrollNumbers.add(scrollNumber);
 //            addView(scrollNumber);
         }

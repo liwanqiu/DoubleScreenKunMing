@@ -22,9 +22,7 @@ public class BusInfoItemView extends LinearLayout {
     public static final String TAG = "BusInfoItemView";
 
     private LinearLayout mainLayout;
-    //    private TextView timeTextView;
     private TextView nameTextView;
-    //    private TextView numTextView;
     private MultiScrollNumber numScrollView;
     private MultiScrollNumber hourScrollView;
     private MultiScrollNumber minuteScrollView;
@@ -82,15 +80,11 @@ public class BusInfoItemView extends LinearLayout {
         mainLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
 
         nameTextView = (TextView) view.findViewById(R.id.text_view_name);
-//        numTextView = (TextView) view.findViewById(R.id.text_view_num);
         numScrollView = (MultiScrollNumber) view.findViewById(R.id.scroll_number_num);
-//        timeTextView = (TextView) view.findViewById(R.id.text_view_time);
         hourScrollView = (MultiScrollNumber) view.findViewById(R.id.scroll_number_hour);
         minuteScrollView = (MultiScrollNumber) view.findViewById(R.id.scroll_number_minute);
         timeSeparatorTextView = (TextView) view.findViewById(R.id.text_view_time_separator);
         adTextView = (TextView) view.findViewById(R.id.text_view_ad);
-
-//        startTimer();
     }
 
     public void start() {
@@ -99,7 +93,6 @@ public class BusInfoItemView extends LinearLayout {
 
 
     public void addBusInfo(BusInfo info) {
-//        Log.i(TAG, "addBusInfo: ");
         isAdding = true;
         if (busInfoList == null) {
             busInfoList = new ArrayList<>();
@@ -107,31 +100,21 @@ public class BusInfoItemView extends LinearLayout {
         if (lineName == null) {
             lineName = info.getLineName();
         }
-//        deleteByNum(info.getBusCustomiseNum());
-//        Log.i(TAG, "addBusInfo: " + info.toString());
         busInfoList.add(info);
         isAdding = false;
     }
 
     private void update() {
         if (busInfoList != null && !busInfoList.isEmpty()) {
-//            Log.i(TAG, "update: " + lineName + " count:" + busInfoList.size());
-//            for (BusInfo busInfo : busInfoList) {
-//                Log.i(TAG, "update: " + busInfo.toString());
-//            }
-
-
             if (currentIndex >= busInfoList.size()) {
                 currentIndex = 0;
             }
             BusInfo info = busInfoList.get(currentIndex);
             currentIndex++;
             nameTextView.setText(info.getLineName());
-//            numTextView.setText(info.getBusCustomiseNum());
             numScrollView.setNumberFromLastVal(Integer.parseInt(info.getBusCustomiseNum().trim()), 4);
-//            timeTextView.setText(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()));
-            hourScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.hourFormat.format(info.getDepartureTime()).trim()), 2);
-            minuteScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.minuteFormat.format(info.getDepartureTime()).trim()), 2);
+            hourScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()).trim().substring(0, 2)), 2);
+            minuteScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()).trim().substring(3, 5)), 2);
             mainLayout.setVisibility(VISIBLE);
             adTextView.setVisibility(INVISIBLE);
             deleteOneOutdatedInfo();
@@ -160,18 +143,7 @@ public class BusInfoItemView extends LinearLayout {
         }
     }
 
-    private void deleteByNum(String num) {
-        if (busInfoList != null && !busInfoList.isEmpty()) {
-            for (BusInfo busInfo : busInfoList) {
-                if (busInfo.getBusCustomiseNum().equals(num)) {
-                    busInfoList.remove(busInfo);
-                }
-            }
-        }
-    }
-
     int count = 0;
-
     private void startTimer() {
         stopTimer();
 
@@ -210,20 +182,16 @@ public class BusInfoItemView extends LinearLayout {
 
     public void setTextColor(int color) {
         nameTextView.setTextColor(color);
-//        numTextView.setTextColor(color);
         numScrollView.setTextColors(new int[]{color, color, color, color});
         hourScrollView.setTextColors(new int[]{color, color});
         minuteScrollView.setTextColors(new int[]{color, color});
         timeSeparatorTextView.setTextColor(color);
-//        timeTextView.setTextColor(color);
         adTextView.setTextColor(color);
     }
 
     public void setTextSize(int size) {
         nameTextView.setTextSize(size);
-//        numTextView.setTextSize(size);
         numScrollView.setTextSize(size);
-//        timeTextView.setTextSize(size);
         hourScrollView.setTextSize(size);
         minuteScrollView.setTextSize(size);
         timeSeparatorTextView.setTextSize(size);
