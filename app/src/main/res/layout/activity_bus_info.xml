@@ -13,43 +13,48 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/titleBgColor"
-        android:padding="@dimen/company_info_padding">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_view_company_info"
-            android:layout_width="0dp"
+            android:id="@+id/text_view_tcp_state"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/tcp_disconnected" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/company_info_str"
-            android:textColor="@color/companyInfoTextColor"
-            android:textSize="@dimen/company_info_font_size" />
+            android:padding="@dimen/company_info_padding">
 
-        <TextView
-            android:id="@+id/weather_ID"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/text_view_company_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/company_info_str"
+                android:textColor="@color/companyInfoTextColor"
+                android:textSize="@dimen/company_info_font_size" />
 
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/weather_ID"
+                android:layout_width="0dp"
 
-        <TextView
-            android:id="@+id/text_view_current_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/currentTimeTextColor"
-            android:textSize="@dimen/current_time_font_size" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/text_view_current_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/currentTimeTextColor"
+                android:textSize="@dimen/current_time_font_size" />
+        </LinearLayout>
 
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/text_view_tcp_state"
-        android:layout_width="match_parent"
-        android:background="@color/tcp_disconnected"
-        android:layout_height="2dp" />
 
 
     <LinearLayout

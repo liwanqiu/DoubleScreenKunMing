@@ -1,5 +1,6 @@
 package com.changfeng.tcpdemo;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,8 +11,9 @@ import android.widget.TextView;
 
 import com.changfeng.tcpdemo.socketclient.helper.SocketResponsePacket;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,6 +22,10 @@ import java.util.TimerTask;
  */
 public class BusInfoActivity extends BaseActivity {
     public static final String TAG = "BusInfoActivity";
+
+    // 是否使用模拟数据
+    public static final String EMULATE = "bus_info_activity_emulate";
+
     private LinearLayout busInfoLayout;
     private BusInfoView busInfoView;
     private TextView companyInfoTextView;
@@ -36,6 +42,11 @@ public class BusInfoActivity extends BaseActivity {
     private String serverAddress;
     private int serverPort;
     private String deviceId;//设备ID
+
+    private boolean isEmulate = false;
+    private Timer emulateTimer;
+    private TimerTask emulateTimerTask;
+    private List<BusInfo> emulateBusInfoList;
 
     private SocketClient socketClient;
     private int reconnectInterval = 10;
@@ -125,6 +136,19 @@ public class BusInfoActivity extends BaseActivity {
 
             }
         });
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EMULATE)) {
+            try {
+                isEmulate = intent.getBooleanExtra(EMULATE, false);
+            } catch (Exception e) {
+                Log.e(TAG, "onCreate: ", e);
+            }
+        }
+
+        if (isEmulate) {
+            emulateBusInfoList = generateBusInfoList();
+        }
     }
 
 
@@ -133,9 +157,14 @@ public class BusInfoActivity extends BaseActivity {
         Log.i(TAG, "onPause: ");
         super.onPause();
         stopTimer();
+        if (isEmulate) {
+            stopEmulateTimer();
+        }
         handler.removeCallbacks(reconnectRunnable);
-        socketClient.removeSocketDelegate(socketDelegate);
-        socketClient.disconnect();
+        if (socketClient != null) {
+            socketClient.removeSocketDelegate(socketDelegate);
+            socketClient.disconnect();
+        }
     }
 
 
@@ -144,12 +173,14 @@ public class BusInfoActivity extends BaseActivity {
         Log.i(TAG, "onResume: ");
         super.onResume();
         startTimer();
-        socketClient.registerSocketDelegate(socketDelegate);
-        connect();
+        if (isEmulate) {
+            startEmulateTimer();
+        }
+        if (!isEmulate) {
+            socketClient.registerSocketDelegate(socketDelegate);
+            connect();
+        }
     }
-
-
-//    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss E").setTimeZone();
 
     public void startTimer() {
         stopTimer();
@@ -184,6 +215,55 @@ public class BusInfoActivity extends BaseActivity {
         if (updateTimeTimerTask != null) {
             updateTimeTimerTask.cancel();
         }
+    }
+
+    private int currentEmulatePosition = 0;
+
+    public void startEmulateTimer() {
+        stopEmulateTimer();
+        currentEmulatePosition = 0;
+        emulateTimer = new Timer();
+        emulateTimerTask = new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        busInfoView.addBusInfo(emulateBusInfoList.get(currentEmulatePosition));
+                        currentEmulatePosition++;
+                        if (currentEmulatePosition >= emulateBusInfoList.size()) {
+                            currentEmulatePosition = 0;
+                        }
+                    }
+                });
+            }
+        };
+        emulateTimer.schedule(emulateTimerTask, 100, 100);
+    }
+
+    public void stopEmulateTimer() {
+        if (emulateTimer != null) {
+            emulateTimer.cancel();
+        }
+        if (emulateTimerTask != null) {
+            emulateTimerTask.cancel();
+        }
+    }
+
+    private List<BusInfo> generateBusInfoList() {
+        List<BusInfo> l = new ArrayList<>();
+        l.add(new BusInfo(1469084160000L, "114路", "5759"));
+        l.add(new BusInfo(1469082960000L, "84路", "0122"));
+        l.add(new BusInfo(1469083080000L, "74路", "5431"));
+        l.add(new BusInfo(1469083440000L, "84路", "7389"));
+        l.add(new BusInfo(1469084160000L, "114路", "5760"));
+        l.add(new BusInfo(1469083200000L, "84路", "7385"));
+        l.add(new BusInfo(1469084160000L, "114路", "5125"));
+        l.add(new BusInfo(1469083440000L, "74路", "5426"));
+        l.add(new BusInfo(1469084160000L, "114路", "5126"));
+        l.add(new BusInfo(1469084160000L, "114路", "5061"));
+
+        return l;
     }
 
     private byte[] generateLoginData() {

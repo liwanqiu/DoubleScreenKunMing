@@ -69,7 +69,9 @@ public class SetParameterActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 savedParameter();
-                startActivity(new Intent(SetParameterActivity.this, PreviewActivity.class));
+                Intent intent = new Intent(SetParameterActivity.this, BusInfoActivity.class);
+                intent.putExtra(BusInfoActivity.EMULATE, true);
+                startActivity(intent);
             }
         });
 //完成设置按钮
