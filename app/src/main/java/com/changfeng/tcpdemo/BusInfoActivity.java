@@ -3,7 +3,7 @@ package com.changfeng.tcpdemo;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.LoginFilter;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,10 +24,17 @@ public class BusInfoActivity extends BaseActivity {
     private BusInfoView busInfoView;
     private TextView companyInfoTextView;
     private TextView currentTimeTextView;
+    private TextView tcpStateTextView;
+
+    private int tcpConnectedColor;
+    private int tcpDisconnectedColor;
+    private int tcpConnectingColor;
 
     public Timer updateTimeTimer;
     public TimerTask updateTimeTimerTask;
 
+    private String serverAddress;
+    private int serverPort;
     private String deviceId;//设备ID
 
     private SocketClient socketClient;
@@ -51,13 +58,9 @@ public class BusInfoActivity extends BaseActivity {
         @Override
         public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
             final byte[] data = responsePacket.getData();
-            Log.i(TAG, "onResponse: start to hex:" + System.currentTimeMillis());
             String dataText = toHex(data);
-            Log.i(TAG, "onResponse: finish to hex, and start to parse: " + System.currentTimeMillis());
             Log.i(TAG, "onResponse: " + dataText);
             parser.read(data);
-            Log.i(TAG, "onResponse: finish parse:" + System.currentTimeMillis());
-
         }
     };
 
@@ -70,6 +73,7 @@ public class BusInfoActivity extends BaseActivity {
 
     private void connect() {
         Log.i(TAG, "connect: ");
+        showToast(R.string.server_connecting, serverAddress, serverPort);
         socketClient.connect();
     }
 
@@ -83,8 +87,8 @@ public class BusInfoActivity extends BaseActivity {
 
 
         SharedPreferences preferences = getSharedPreferences(SharedPref.name, MODE_PRIVATE);
-        String serverAddress = preferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
-        int serverPort = preferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
+        serverAddress = preferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
+        serverPort = preferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
         int timeFontSize = preferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
 
         deviceId = preferences.getString(SharedPref.DEVICE_ID,
@@ -96,18 +100,28 @@ public class BusInfoActivity extends BaseActivity {
         companyInfoTextView.setTextSize(timeFontSize);
         currentTimeTextView = (TextView) findViewById(R.id.text_view_current_time);
         currentTimeTextView.setTextSize(timeFontSize);
+        tcpStateTextView = (TextView) findViewById(R.id.text_view_tcp_state);
         busInfoView = new BusInfoView(this, busInfoLayout
         );
 
+        tcpConnectedColor = ContextCompat.getColor(this, R.color.tcp_connected);
+        tcpConnectingColor = ContextCompat.getColor(this, R.color.tcp_connecting);
+        tcpDisconnectedColor = ContextCompat.getColor(this, R.color.tcp_disconnected);
+        tcpStateTextView.setBackgroundColor(tcpDisconnectedColor);
+
         socketClient = new SocketClient(serverAddress, serverPort);
-        socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(60 * 1000);
+        socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(180 * 1000);
 
         parser = new BusInfoParser(this);
         parser.setOnBusInfoListener(new BusInfoParser.OnBusInfoListener() {
             @Override
             public void onReceived(BusInfo busInfo) {
                 Log.i(TAG, "onReceived: bus info:" + busInfo.toString());
-                busInfoView.addBusInfo(busInfo);
+                // 屏蔽测试数据
+                if (!busInfo.getBusCustomiseNum().isEmpty()) {
+                    busInfoView.addBusInfo(busInfo);
+                }
+
 
             }
         });
@@ -135,7 +149,7 @@ public class BusInfoActivity extends BaseActivity {
     }
 
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss E");
+//    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-dd-MM hh:mm:ss E").setTimeZone();
 
     public void startTimer() {
         stopTimer();
@@ -146,7 +160,16 @@ public class BusInfoActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        currentTimeTextView.setText(dateFormat.format(new Date()));
+                        currentTimeTextView.setText(TimeUtil.dateFormat.format(new Date()));
+                        if (socketClient != null) {
+                            if (socketClient.isConnected()) {
+                                tcpStateTextView.setBackgroundColor(tcpConnectedColor);
+                            } else if (socketClient.isConnecting()) {
+                                tcpStateTextView.setBackgroundColor(tcpConnectedColor);
+                            } else if (socketClient.isDisconnected()) {
+                                tcpStateTextView.setBackgroundColor(tcpDisconnectedColor);
+                            }
+                        }
                     }
                 });
             }

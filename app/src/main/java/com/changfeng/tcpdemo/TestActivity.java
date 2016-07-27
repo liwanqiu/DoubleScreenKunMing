@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by chang on 2016/7/25.
@@ -47,9 +48,10 @@ public class TestActivity extends BaseActivity {
         @Override
         public void onResponse(SocketClient client, @NonNull SocketResponsePacket responsePacket) {
             byte[] data = responsePacket.getData();
+            addDebugInfo(R.string.receive_data, data.length);
             String dataText = toHex(data);
             Log.i(TAG, "onResponse: " + dataText);
-            addDebugInfo(dataText);
+//            addDebugInfo(dataText);
 
             parser.read(data);
 
@@ -78,7 +80,7 @@ public class TestActivity extends BaseActivity {
 
 
         socketClient = new SocketClient(serverAddress, serverPort);
-        socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(60 * 1000);
+        socketClient.getHeartBeatHelper().setRemoteNoReplyAliveTimeout(5 * 60 * 1000);
 
         parser = new BusInfoParser(this);
         parser.setOnBusInfoListener(new BusInfoParser.OnBusInfoListener() {
@@ -111,6 +113,10 @@ public class TestActivity extends BaseActivity {
         super.onResume();
         socketClient.registerSocketDelegate(socketDelegate);
         connect();
+    }
+
+    public void addDebugInfo(int resId, Object... formatArgs) {
+        addDebugInfo(getString(resId, formatArgs));
     }
 
     public void addDebugInfo(String info) {

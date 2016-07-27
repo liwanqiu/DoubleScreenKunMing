@@ -42,7 +42,14 @@
             android:textColor="@color/currentTimeTextColor"
             android:textSize="@dimen/current_time_font_size" />
 
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_view_tcp_state"
+        android:layout_width="match_parent"
+        android:background="@color/tcp_disconnected"
+        android:layout_height="2dp" />
 
 
     <LinearLayout

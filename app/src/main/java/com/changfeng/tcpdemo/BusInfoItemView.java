@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -88,14 +88,17 @@ public class BusInfoItemView extends LinearLayout {
             lineName = info.getLineName();
         }
 //        deleteByNum(info.getBusCustomiseNum());
+        Log.i(TAG, "addBusInfo: " + info.toString());
         busInfoList.add(info);
         isAdding = false;
     }
 
-    SimpleDateFormat format = new SimpleDateFormat("mm:ss");
-
     private void update() {
         if (busInfoList != null && !busInfoList.isEmpty()) {
+            Log.i(TAG, "update: " + lineName + " count:" + busInfoList.size());
+            for (BusInfo busInfo : busInfoList) {
+                Log.i(TAG, "update: " + busInfo.toString());
+            }
             currentIndex++;
             if (currentIndex >= busInfoList.size()) {
                 currentIndex = 0;
@@ -103,11 +106,12 @@ public class BusInfoItemView extends LinearLayout {
             BusInfo info = busInfoList.get(currentIndex);
             nameTextView.setText(info.getLineName());
             numTextView.setText(info.getBusCustomiseNum());
-            timeTextView.setText(format.format(info.getDepartureTime()));
+            timeTextView.setText(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()));
             mainLayout.setVisibility(VISIBLE);
             adTextView.setVisibility(INVISIBLE);
             deleteOneOutdatedInfo();
         } else {
+            lineName = null;
             mainLayout.setVisibility(INVISIBLE);
             adTextView.setVisibility(VISIBLE);
         }
@@ -117,11 +121,17 @@ public class BusInfoItemView extends LinearLayout {
     private void deleteOneOutdatedInfo() {
         if (busInfoList != null && !busInfoList.isEmpty()) {
             for (BusInfo info : busInfoList) {
-                if (System.currentTimeMillis() / 1000 - info.getDepartureTime() > outDateSecondsTolerate) {
+                if (System.currentTimeMillis() - info.getDepartureTime() > outDateSecondsTolerate * 1000) {
                     busInfoList.remove(info);
                     break;
                 }
             }
+        }
+    }
+
+    public void deleteInfo(BusInfo info) {
+        if (busInfoList != null && !busInfoList.isEmpty()) {
+            busInfoList.remove(info);
         }
     }
 

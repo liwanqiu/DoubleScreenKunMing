@@ -3,6 +3,7 @@ package com.changfeng.tcpdemo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -19,6 +20,8 @@ public class BusInfoView {
     private LinearLayout layout;
 
     private List<BusInfoItemView> itemViews = new ArrayList<>();
+
+    private List<BusInfo> busInfoList;
 
     public BusInfoView(Context context, LinearLayout layout) {
         this.context = context;
@@ -49,6 +52,7 @@ public class BusInfoView {
             view.setTextSize(busFontSize);
 
             view.setInterval(itemInterval);
+            view.setPadding(5, 2, 5, 2);
 
             view.setAd(ad);
             itemViews.add(view);
@@ -59,11 +63,28 @@ public class BusInfoView {
     }
 
     public void addBusInfo(BusInfo info) {
+        if (busInfoList == null) {
+            busInfoList = new ArrayList<>();
+        }
+
+        // 删除已经存在同一自编号的记录
+        for (BusInfo busInfo : busInfoList) {
+            if (info.getBusCustomiseNum().equals(busInfo.getBusCustomiseNum())) {
+                busInfoList.remove(busInfo);
+                for (BusInfoItemView view : itemViews) {
+                    view.deleteInfo(busInfo);
+                }
+                break;
+            }
+        }
+
         boolean found = false;
+        boolean added = false;
         for (BusInfoItemView view : itemViews) {
             if (view.getLineName() != null && view.getLineName().equals(info.getLineName())) {
                 view.addBusInfo(info);
                 found = true;
+                added = true;
             }
         }
 
@@ -71,10 +92,19 @@ public class BusInfoView {
             for (BusInfoItemView view : itemViews) {
                 if (view.getLineName() == null) {
                     view.addBusInfo(info);
+                    added = true;
                     break;
                 }
             }
         }
+
+        if (added) {
+            busInfoList.add(info);
+        } else {
+            // TODO: 2016/7/27  当Item 数目小于 线路数目，处理
+        }
+
+
     }
 
 

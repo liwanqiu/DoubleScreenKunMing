@@ -37,6 +37,7 @@
     <string name="server_connecting">正在连接服务器：地址：%1$s 端口：%2$d</string>
     <string name="server_connected">服务器连接成功 地址：%1$s 端口：%2$d</string>
     <string name="server_disconnected">服务器已经断开 地址：%1$s 端口：%2$d</string>
+    <string name="receive_data">接收字节数：%1$d</string>
 
     <string name="button_settings">设置</string>
     <string name="button_test">测试</string>

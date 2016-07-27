@@ -150,6 +150,8 @@ public class BusInfoParser {
         Long departureTime = null;
         String busCustomiseNum = null;
 
+        boolean finish = false;
+
         while (true) {
             byte type = data[i];
             Log.i(TAG, "parse: type:" + String.format("%02x", type));
@@ -186,7 +188,8 @@ public class BusInfoParser {
                     i += numLen + 3;
                     break;
                 case TYPE_DEPARTURE_TIME:
-                    departureTime = (long) ((data[i + 2] << 24) + (data[i + 3] << 16) + (data[i + 4] << 16) + (data[i + 5] << 8) + (data[i + 6]));
+                    // 格林尼治时区 自 1970年1月1日0时0分0秒到当前的秒数
+                    departureTime = (long) (((data[i + 2] << 24) & 0x00FF000000) + ((data[i + 3] << 16) & 0x0000FF0000) + ((data[i + 4] << 8) & 0x0000FF00) + ((data[i + 5]) & 0x00FF));
                     Log.i(TAG, "parse: departure time:" + departureTime);
                     i += 6;
                     break;
@@ -236,6 +239,7 @@ public class BusInfoParser {
                     i += 4;
                     break;
                 default:
+                    finish = true;
                     break;
             }
 
@@ -245,8 +249,11 @@ public class BusInfoParser {
             if (lineName != null && departureTime != null && busCustomiseNum != null) {
                 Log.i(TAG, "parse: time:" + departureTime + " name:" + lineName + " num:" + busCustomiseNum);
                 if (onBusInfoListener != null) {
-                    onBusInfoListener.onReceived(new BusInfo(departureTime, lineName, busCustomiseNum));
+                    // 时间要转为北京时间， 单位由毫秒转为秒
+                    onBusInfoListener.onReceived(new BusInfo((departureTime) * 1000, lineName, busCustomiseNum));
                 }
+                break;
+            } else if (finish) {
                 break;
             }
         }
