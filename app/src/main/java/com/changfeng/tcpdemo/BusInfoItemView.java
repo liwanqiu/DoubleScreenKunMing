@@ -2,11 +2,14 @@ package com.changfeng.tcpdemo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.changfeng.tcpdemo.widget.MultiScrollNumber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,8 @@ public class BusInfoItemView extends LinearLayout {
     private LinearLayout mainLayout;
     private TextView timeTextView;
     private TextView nameTextView;
-    private TextView numTextView;
+    //    private TextView numTextView;
+    private MultiScrollNumber numScrollView;
     private TextView adTextView;
 
     private boolean isAdding = false;
@@ -69,7 +73,8 @@ public class BusInfoItemView extends LinearLayout {
         mainLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
 
         nameTextView = (TextView) view.findViewById(R.id.text_view_name);
-        numTextView = (TextView) view.findViewById(R.id.text_view_num);
+//        numTextView = (TextView) view.findViewById(R.id.text_view_num);
+        numScrollView = (MultiScrollNumber) view.findViewById(R.id.scroll_number_num);
         timeTextView = (TextView) view.findViewById(R.id.text_view_time);
         adTextView = (TextView) view.findViewById(R.id.text_view_ad);
 
@@ -104,7 +109,8 @@ public class BusInfoItemView extends LinearLayout {
             }
             BusInfo info = busInfoList.get(currentIndex);
             nameTextView.setText(info.getLineName());
-            numTextView.setText(info.getBusCustomiseNum());
+//            numTextView.setText(info.getBusCustomiseNum());
+            numScrollView.setNumber(Integer.parseInt(info.getBusCustomiseNum().trim()), 4, true);
             timeTextView.setText(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()));
             mainLayout.setVisibility(VISIBLE);
             adTextView.setVisibility(INVISIBLE);
@@ -184,14 +190,16 @@ public class BusInfoItemView extends LinearLayout {
 
     public void setTextColor(int color) {
         nameTextView.setTextColor(color);
-        numTextView.setTextColor(color);
+//        numTextView.setTextColor(color);
+        numScrollView.setTextColors(new int[]{color, color, color, color});
         timeTextView.setTextColor(color);
         adTextView.setTextColor(color);
     }
 
     public void setTextSize(int size) {
         nameTextView.setTextSize(size);
-        numTextView.setTextSize(size);
+//        numTextView.setTextSize(size);
+        numScrollView.setTextSize(size);
         timeTextView.setTextSize(size);
         adTextView.setTextSize(size);
     }

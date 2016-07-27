@@ -10,11 +10,11 @@
         android:padding="2dp">
 
         <LinearLayout
-            android:padding="5dp"
             android:id="@+id/layout_bus_info_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:padding="5dp"
             android:visibility="gone">
 
             <TextView
@@ -25,12 +25,18 @@
                 android:gravity="center" />
 
 
-            <TextView
-                android:id="@+id/text_view_num"
+            <!--<TextView-->
+            <!--android:id="@+id/text_view_num"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center" />-->
+
+            <com.changfeng.tcpdemo.widget.MultiScrollNumber
+                android:id="@+id/scroll_number_num"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center" />
+                android:layout_weight="1" />
 
 
             <TextView
