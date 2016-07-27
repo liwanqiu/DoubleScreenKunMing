@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.support.annotation.ColorRes;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -21,11 +21,16 @@ import java.util.List;
  * Created by wuhaojie on 2016/7/19 20:39.
  */
 public class MultiScrollNumber extends LinearLayout {
+
+    private static final String TAG = "MultiScrollNumber";
+
     private Context mContext;
     private List<Integer> mTargetNumbers = new ArrayList<>();
     private List<Integer> mPrimaryNumbers = new ArrayList<>();
     private List<ScrollNumber> mScrollNumbers = new ArrayList<>();
     private int mTextSize = 130;
+
+    private int lastVal = 0;
 
     private int[] mTextColors = new int[]{Color.BLUE};
     private Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
@@ -80,6 +85,7 @@ public class MultiScrollNumber extends LinearLayout {
             mScrollNumbers.add(scrollNumber);
             addView(scrollNumber);
         }
+        lastVal = val;
     }
 
     public void setNumber(int val, int count, boolean forceFlag) {
@@ -110,10 +116,12 @@ public class MultiScrollNumber extends LinearLayout {
             addView(scrollNumber);
         }
 
+        lastVal = val;
     }
 
     private void resetView() {
         mTargetNumbers.clear();
+        mPrimaryNumbers.clear();
         mScrollNumbers.clear();
         removeAllViews();
     }
@@ -151,6 +159,57 @@ public class MultiScrollNumber extends LinearLayout {
             mScrollNumbers.add(scrollNumber);
             addView(scrollNumber);
         }
+
+        lastVal = to;
+
+    }
+
+    public void setNumberFromLastVal(int val, int count) {
+        setNumber(lastVal, val, count, true);
+    }
+
+    public void setNumber(int from, int to, int count, boolean forceflag) {
+//        if (to < from)
+//            throw new UnsupportedOperationException("'to' value must > 'from' value");
+
+        resetView();
+//        Log.i(TAG, "setNumber:from: " + from + " to:" + to);
+        // operate to
+        int number = to;
+        while (number > 0) {
+            int i = number % 10;
+            mTargetNumbers.add(i);
+            number /= 10;
+        }
+        while (mTargetNumbers.size() < count) {
+            mTargetNumbers.add(0);
+        }
+        // operate from
+        number = from;
+        while (number > 0) {
+            int i = number % 10;
+            mPrimaryNumbers.add(i);
+            number /= 10;
+        }
+
+        while (mPrimaryNumbers.size() < count) {
+            mPrimaryNumbers.add(0);
+        }
+
+        for (int i = mTargetNumbers.size() - 1; i >= 0; i--) {
+            ScrollNumber scrollNumber = new ScrollNumber(mContext);
+            scrollNumber.setTextColor(mTextColors[i % mTextColors.length]);
+            scrollNumber.setTextSize(mTextSize);
+            if (!TextUtils.isEmpty(mFontFileName))
+                scrollNumber.setTextFont(mFontFileName);
+//            Log.i(TAG, "setNumber: from:" + mPrimaryNumbers.get(i) + " to:" + mTargetNumbers.get(i));
+            scrollNumber.setNumber(mPrimaryNumbers.get(i), mTargetNumbers.get(i), i * 100);
+            mScrollNumbers.add(scrollNumber);
+            addView(scrollNumber);
+        }
+
+        lastVal = to;
+//        mPrimaryNumbers = mTargetNumbers;
 
     }
 

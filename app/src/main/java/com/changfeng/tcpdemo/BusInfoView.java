@@ -54,15 +54,25 @@ public class BusInfoView {
             view.setInterval(itemInterval);
             view.setPadding(5, 2, 5, 2);
 
+            view.setDelay((i + 1) * 500);
+
             view.setAd(ad);
             itemViews.add(view);
             layout.addView(view, lp);
+            view.start();
 
         }
 
     }
 
     public void addBusInfo(BusInfo info) {
+
+//         // test
+//        if (!info.getLineName().equals("84路")) {
+//            return;
+//        }
+//
+
         if (busInfoList == null) {
             busInfoList = new ArrayList<>();
         }

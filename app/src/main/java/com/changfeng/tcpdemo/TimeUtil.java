@@ -10,6 +10,8 @@ public class TimeUtil {
 
     public static SimpleDateFormat dateFormat;
     public static SimpleDateFormat hourMinuteFormat;
+    public static SimpleDateFormat hourFormat;
+    public static SimpleDateFormat minuteFormat;
 
     static {
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E");
@@ -17,6 +19,12 @@ public class TimeUtil {
 
         hourMinuteFormat = new SimpleDateFormat("HH:mm");
         hourMinuteFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        hourFormat = new SimpleDateFormat("HH");
+        hourFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        minuteFormat = new SimpleDateFormat("mm");
+        minuteFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
     }
 }
 

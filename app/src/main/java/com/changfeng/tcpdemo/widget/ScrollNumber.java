@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -16,6 +17,8 @@ import android.view.animation.Interpolator;
  * Created by wuhaojie on 2016/7/15 11:36.
  */
 public class ScrollNumber extends View {
+
+    private static final String TAG = "ScrollNumber";
 
     private int mDeltaNum;
     private int mCurNum;
@@ -56,18 +59,23 @@ public class ScrollNumber extends View {
         if (mTypeface != null) mPaint.setTypeface(mTypeface);
 
         measureTextHeight();
-
-//        setNumber(0, 6, 1000);
-
     }
 
     public void setNumber(final int from, final int to, long delay) {
+        Log.i(TAG, "setNumber: from:" + from + " to:" + to);
         postDelayed(new Runnable() {
             @Override
             public void run() {
+                mDeltaNum = to - from;
+                if (mDeltaNum <= 0) {
+                    mDeltaNum += 10;
+                }
                 setFromNumber(from);
                 setTargetNumber(to);
-                mDeltaNum = to - from;
+
+                Log.i(TAG, "setNumber: mCurNum:" + mCurNum + " mTargetNum:" + mTargetNum);
+
+
             }
         }, delay);
     }
@@ -77,7 +85,7 @@ public class ScrollNumber extends View {
         mPaint.setTextSize(mTextSize);
         measureTextHeight();
         requestLayout();
-        invalidate();
+//        invalidate();
     }
 
 
@@ -88,13 +96,13 @@ public class ScrollNumber extends View {
         if (mTypeface == null) throw new RuntimeException("please check your font!");
         mPaint.setTypeface(mTypeface);
         requestLayout();
-        invalidate();
+//        invalidate();
     }
 
     public void setTextColor(int mTextColor) {
         this.mTextColor = mTextColor;
         mPaint.setColor(mTextColor);
-        invalidate();
+//        invalidate();
     }
 
     public void setInterpolator(Interpolator interpolator) {
@@ -130,7 +138,7 @@ public class ScrollNumber extends View {
                 break;
         }
         result = mode == MeasureSpec.AT_MOST ? Math.min(result, val) : result;
-        return result + getPaddingTop() + getPaddingBottom()+dp2px(40);
+        return result + getPaddingTop() + getPaddingBottom() + dp2px(40);
     }
 
     private int measureWidth(int measureSpec) {
@@ -154,6 +162,7 @@ public class ScrollNumber extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+//        Log.i(TAG, "onDraw: mCurNum:" + mCurNum + " mNextNum:" + mNextNum + " mTargetNum:" + mTargetNum);
 
         if (mCurNum != mTargetNum) {
             postDelayed(mScrollRunnable, 0);
@@ -163,18 +172,27 @@ public class ScrollNumber extends View {
             }
         }
 
-        canvas.translate(0, mOffset * getMeasuredHeight());
-        drawSelf(canvas);
-        drawNext(canvas);
+        if (mCurNum != mTargetNum) {
+
+            canvas.translate(0, mOffset * getMeasuredHeight());
+            drawSelf(canvas);
+            drawNext(canvas);
+        } else {
+            canvas.drawText(mTargetNum + "", mTextCenterX, mTextHeight / 2 + getMeasuredHeight() / 2, mPaint);
+        }
+//        if (mCurNum != mTargetNum) {
+//            invalidate();
+//        }
 //        canvas.restore();
     }
 
     private void setFromNumber(int number) {
+        Log.i(TAG, "setFromNumber: number:" + number);
         if (number < 0 || number > 9)
             throw new RuntimeException("invalidate number , should in [0,9]");
         calNum(number);
         mOffset = 0;
-        invalidate();
+//        invalidate();
     }
 
 
@@ -183,6 +201,7 @@ public class ScrollNumber extends View {
         number = number == 10 ? 0 : number;
         mCurNum = number;
         mNextNum = number + 1 == 10 ? 0 : number + 1;
+        Log.i(TAG, "calNum: mCurNum:" + mCurNum + " mTartNum:" + mTargetNum);
     }
 
     private Runnable mScrollRunnable = new Runnable() {
@@ -208,6 +227,7 @@ public class ScrollNumber extends View {
 
 
     public void setTargetNumber(int nextNum) {
+        Log.i(TAG, "setTargetNumber: mTargetNum:" + nextNum);
         this.mTargetNum = nextNum;
         invalidate();
     }
