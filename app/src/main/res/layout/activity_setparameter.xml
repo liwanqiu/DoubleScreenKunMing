@@ -127,6 +127,26 @@
         <TextView
             style="@style/SetParameterViewStyle"
             android:layout_weight="1"
+            android:text="@string/text_view_weather_interval"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/text_edit_weather_interval"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:maxLength="9"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
             android:text="IP地址："
             android:textSize="@dimen/parameter_text_size" />
 

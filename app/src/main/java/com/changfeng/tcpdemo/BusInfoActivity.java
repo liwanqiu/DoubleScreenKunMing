@@ -179,6 +179,7 @@ public class BusInfoActivity extends BaseActivity {
 
         deviceId = preferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID);
+        int fetchWeatherInterval = preferences.getInt(SharedPref.WEATHER_INTERVAL, Constants.DEFAULT_WEATHER_INTERVAL);
 
         busInfoLayout = (LinearLayout) findViewById(R.id.layout_bus_info);
 
@@ -221,6 +222,7 @@ public class BusInfoActivity extends BaseActivity {
             }
         });
 
+
         Intent intent = getIntent();
         if (intent.hasExtra(EMULATE)) {
             try {
@@ -237,6 +239,7 @@ public class BusInfoActivity extends BaseActivity {
         cityTextView.setText(getString(R.string.city));
         WeatherManager.getInstance().registerWeatherChangeListener(weatherChangedListener);
         WeatherManager.getInstance().setCityName(getString(R.string.city_en));
+        WeatherManager.getInstance().setFetchWeatherInterval(fetchWeatherInterval);
     }
 
 
@@ -244,6 +247,7 @@ public class BusInfoActivity extends BaseActivity {
     protected void onPause() {
         Log.i(TAG, "onPause: ");
         super.onPause();
+
         stopTimer();
         if (isEmulate) {
             stopEmulateTimer();
@@ -253,10 +257,9 @@ public class BusInfoActivity extends BaseActivity {
             socketClient.removeSocketDelegate(socketDelegate);
             socketClient.disconnect();
         }
+        parser.stop();
 
         WeatherManager.getInstance().stopWeatherFetchingTimer();
-
-
     }
 
 
@@ -268,6 +271,8 @@ public class BusInfoActivity extends BaseActivity {
         if (isEmulate) {
             startEmulateTimer();
         }
+
+//        parser.start();
         if (!isEmulate) {
             socketClient.registerSocketDelegate(socketDelegate);
             connect();

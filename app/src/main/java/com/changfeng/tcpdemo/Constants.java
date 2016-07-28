@@ -17,6 +17,8 @@ public class Constants {
     public static final int DEFAULT_SERVER_PORT = 50000;
     public static final String DEFAULT_SERVER_ADDRESS = "100.20.176.13"; // 移动IP 100.20.176.13   电信IP 172.25.40.31
 
+    public static final int DEFAULT_WEATHER_INTERVAL = 10; // 获取天气事件间隔, 分钟
+
     public static List<Integer> itemCountList;
     public static List<Integer> itemScrollIntervalList;
     public static List<Integer> busInfoFontSize;

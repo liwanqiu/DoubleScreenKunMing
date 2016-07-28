@@ -14,6 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by ${似水流年} on 2016/7/14.
  */
@@ -25,6 +28,9 @@ public class SetParameterActivity extends BaseActivity {
     private EditText adEdit;
     private EditText deviceIdEdit, serviceAddressEdit, serverPortEdit;
 
+    @BindView(R.id.text_edit_weather_interval)
+    EditText weatherEditText;
+
     //设置一些缺省值
     private String ad;//广告内容
     private int adFontSize;//广告字体大小
@@ -32,10 +38,11 @@ public class SetParameterActivity extends BaseActivity {
     private int itemInterval;//滚动周期
     private int busInfoFontSize;//发车信息字体大小
     private int timeFontSize;
+    private int weatherInterval;
 
 
     private String serverAddress;//服务器地址
-    private int port;//端口号
+    private int serverPort;//端口号
     private String deviceId;//设备ID
 
     @Override
@@ -45,10 +52,27 @@ public class SetParameterActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setBackgroundDrawableResource(R.color.preActivityBg);
         setContentView(R.layout.activity_setparameter);
+        ButterKnife.bind(this);
 
         findViewID();
         initValues();
         initSpinner();
+    }
+
+    private boolean isSettingsLegal() {
+        if (deviceIdEdit.getText().toString().trim().isEmpty()) {
+            showToast(R.string.message_device_id_not_correct);
+            return false;
+        }
+        if (Integer.parseInt(serverPortEdit.getText().toString()) > 65535) {
+            showToast(R.string.message_port_not_correct);
+            return false;
+        }
+        if (Integer.parseInt(weatherEditText.getText().toString()) <= 0) {
+            showToast(R.string.message_weather_interval_not_correct);
+            return false;
+        }
+        return true;
     }
 
     private void findViewID() {
@@ -68,6 +92,9 @@ public class SetParameterActivity extends BaseActivity {
         previewSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isSettingsLegal()) {
+                    return;
+                }
                 savedParameter();
                 Intent intent = new Intent(SetParameterActivity.this, BusInfoActivity.class);
                 intent.putExtra(BusInfoActivity.EMULATE, true);
@@ -79,12 +106,7 @@ public class SetParameterActivity extends BaseActivity {
         finishSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (deviceIdEdit.getText().toString().trim().isEmpty()) {
-                    showToast(R.string.message_device_id_not_correct);
-                    return;
-                }
-                if (Integer.parseInt(serverPortEdit.getText().toString()) > 65535) {
-                    showToast(R.string.message_port_not_correct);
+                if (!isSettingsLegal()) {
                     return;
                 }
                 savedParameter();
@@ -107,18 +129,19 @@ public class SetParameterActivity extends BaseActivity {
 
         deviceId = sharedPreferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID);
-        port = sharedPreferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
+        serverPort = sharedPreferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
         serverAddress = sharedPreferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
 
         timeFontSize = sharedPreferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
 
+        weatherInterval = sharedPreferences.getInt(SharedPref.WEATHER_INTERVAL, Constants.DEFAULT_WEATHER_INTERVAL);
+
+
         deviceIdEdit.setText(deviceId);
-        serverPortEdit.setText(String.valueOf(port));
+        serverPortEdit.setText(String.valueOf(serverPort));
         serviceAddressEdit.setText(serverAddress);
+        weatherEditText.setText(String.valueOf(weatherInterval));
         adEdit.setText(ad);
-        Log.i(TAG, "initValues() 设备ID：" + deviceId + " 端口号：" + port + "   ip:  " +
-                serverAddress + "  广告内容：" +
-                ad);
     }
 
     private void savedParameter() {
@@ -145,6 +168,7 @@ public class SetParameterActivity extends BaseActivity {
         editor.putString(SharedPref.SERVER_ADDRESS, serviceAddressEdit.getText().toString());
         editor.putInt(SharedPref.SERVER_PORT, Integer.parseInt(serverPortEdit.getText()
                 .toString()));
+        editor.putInt(SharedPref.WEATHER_INTERVAL, Integer.parseInt(weatherEditText.getText().toString()));
         editor.apply();
     }
 

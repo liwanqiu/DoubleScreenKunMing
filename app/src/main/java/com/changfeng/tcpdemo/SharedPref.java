@@ -16,8 +16,7 @@ public class SharedPref {
     public static final String AD_FONT_SIZE = "ad_font_size";
     public static final String DEVICE_ID = "device_id";
     public static final String TIME_FONT_SIZE = "time_font_size";
-
-
+    public static final String WEATHER_INTERVAL = "weather_interval";
 
 
 }

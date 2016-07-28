@@ -25,8 +25,9 @@
     <!--<string name="non_change">数据由定时器发出</string>-->
     <!--<string name="change">数据由设置按钮发出</string>-->
     <string name="message_device_id_not_correct">设备地址不能为空！</string>
-    <string name="message_port_not_correct">"端口号输入有误，应该小于65535！"</string>
+    <string name="message_port_not_correct">"端口号输入有误，应该小于65535！</string>
     <string name="message_receive_empty_data">接收到的数据为空！</string>
+    <string name="message_weather_interval_not_correct">获取天气时间间隔必须大于0！</string>
 
     <string name="ad_content_str_default">助人为乐,服务大家！</string>
 
@@ -51,7 +52,8 @@
     <string name="min_temperature">最低 %1$s℃</string>
     <string name="wind">%1$s</string>
 
-
+    <!--设置-->
     <string name="button_settings">设置</string>
     <string name="button_test">测试</string>
+    <string name="text_view_weather_interval">更新天气时间间隔（单位分钟）</string>
 </resources>
