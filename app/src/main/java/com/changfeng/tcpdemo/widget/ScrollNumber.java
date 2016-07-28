@@ -207,7 +207,7 @@ public class ScrollNumber extends View {
         @Override
         public void run() {
             float x = (float) (1 - 1.0 * (mTargetNum - mCurNum) / mDeltaNum);
-            mOffset -= 0.15f * (1 - mInterpolator.getInterpolation(x) + 0.1);
+            mOffset -= 2.0f * (1 - mInterpolator.getInterpolation(x) + 0.1);
             invalidate();
         }
     };

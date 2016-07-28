@@ -46,6 +46,8 @@ public class BusInfoParser {
     private byte lenLow;
     private byte lenHigh;
 
+    private Thread parseThread;
+
     public BusInfoParser(Context context) {
         this.context = context;
     }
@@ -103,10 +105,7 @@ public class BusInfoParser {
                     receiveState = STATE_NO_RECEIVE;
                 }
                 break;
-
-
         }
-
     }
 
     private void parse(byte[] data) {
@@ -249,7 +248,7 @@ public class BusInfoParser {
             if (lineName != null && departureTime != null && busCustomiseNum != null) {
                 Log.i(TAG, "parse: time:" + departureTime + " name:" + lineName + " num:" + busCustomiseNum);
                 if (onBusInfoListener != null) {
-                    // 时间要转为北京时间， 单位由毫秒转为秒
+                    //单位由毫秒转为秒
                     onBusInfoListener.onReceived(new BusInfo((departureTime) * 1000, lineName, busCustomiseNum));
                 }
                 break;
