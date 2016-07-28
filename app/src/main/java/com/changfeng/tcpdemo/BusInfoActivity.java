@@ -295,7 +295,7 @@ public class BusInfoActivity extends BaseActivity {
                             if (socketClient.isConnected()) {
                                 tcpStateTextView.setBackgroundColor(tcpConnectedColor);
                             } else if (socketClient.isConnecting()) {
-                                tcpStateTextView.setBackgroundColor(tcpConnectedColor);
+                                tcpStateTextView.setBackgroundColor(tcpConnectingColor);
                             } else if (socketClient.isDisconnected()) {
                                 tcpStateTextView.setBackgroundColor(tcpDisconnectedColor);
                             }
