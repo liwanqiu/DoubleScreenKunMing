@@ -242,6 +242,11 @@ public class BusInfoActivity extends BaseActivity {
         WeatherManager.getInstance().setFetchWeatherInterval(fetchWeatherInterval);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        WeatherManager.getInstance().removeWeatherListener(weatherChangedListener);
+    }
 
     @Override
     protected void onPause() {
@@ -337,7 +342,7 @@ public class BusInfoActivity extends BaseActivity {
                 });
             }
         };
-        emulateTimer.schedule(emulateTimerTask, 100, 100);
+        emulateTimer.schedule(emulateTimerTask, 100, 200);
     }
 
     public void stopEmulateTimer() {

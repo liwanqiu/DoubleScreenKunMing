@@ -125,7 +125,7 @@ public class BusInfoItemView extends LinearLayout {
         }
     }
 
-    // 避免一下在删除所有的数据造成视觉体验不好
+    // 避免一下子删除所有的数据造成视觉体验不好
     private void deleteOneOutdatedInfo() {
         if (busInfoList != null && !busInfoList.isEmpty()) {
             for (BusInfo info : busInfoList) {
