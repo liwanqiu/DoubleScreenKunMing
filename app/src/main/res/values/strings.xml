@@ -44,4 +44,7 @@
     <string name="button_settings">设置</string>
     <string name="button_test">测试</string>
     <string name="label_weather_interval">更新天气时间间隔（单位分钟）</string>
+
+    <string name="message_copy_file_success">更新文件成功</string>
+    <string name="message_copy_file_failed">复制文件失败:%1$s"</string>
 </resources>

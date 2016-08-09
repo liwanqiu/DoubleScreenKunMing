@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -91,8 +92,7 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
 
 
     @Override
-    public String onSuggest(String weather) {
-        // TODO: 2016/8/9
+    public String onSuggest(String dateWeather, String nightWeather) {
         if (weatherSuggestion == null) {
             try {
                 String suggestionFileName = Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
@@ -103,8 +103,19 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
             }
         }
 
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        Log.i(TAG, "onSuggest() hour:" + hour);
+
+        String weather;
+        if (hour > 18 && hour < 4) {
+            weather = nightWeather;
+        } else {
+            weather = dateWeather;
+        }
+
         for (Suggestion.SuggestionBean s : weatherSuggestion.getSuggestion()) {
-            if (s.getWeather().equals(weather)) {
+            if (s.getWeather().trim().equals(weather)) {
                 return s.getSuggestion();
             }
         }

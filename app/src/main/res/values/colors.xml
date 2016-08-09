@@ -37,6 +37,7 @@
     <color name="companyInfoTextColor">#FFFFFFFF</color>
     <color name="currentTimeTextColor">#FFEAFB5A</color>
 
+    <color name="weatherColor">#FFFF5722</color>
     // TCP connect state
     <color name="tcp_connected">#FF10272F</color>
     <color name="tcp_disconnected">#FFEAFB5A</color>

@@ -131,7 +131,7 @@ public class WeatherManager {
                                     listener.onMaxTemperatureChanged(tmp.getMax());
                                     listener.onMinTemperatureChanged(tmp.getMin());
                                     listener.onWindChanged(wind.getDir() + " " + wind.getSc());
-                                    listener.onSuggestion(((OnWeatherSuggestListener) context).onSuggest(cond.getTxt_d()));
+                                    listener.onSuggestion(((OnWeatherSuggestListener) context).onSuggest(cond.getTxt_d(), cond.getTxt_n()));
                                 }
 
                             } catch (Exception e) {

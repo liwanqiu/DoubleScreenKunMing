@@ -2,6 +2,7 @@ package com.changfeng.tcpdemo;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +22,8 @@ import java.util.TimerTask;
 public class BusInfoItemView extends LinearLayout {
     public static final String TAG = "BusInfoItemView";
 
-    private LinearLayout mainLayout;
+    private CardView itemLayout;
+    private LinearLayout busInfoLayout;
     private TextView nameTextView;
     private MultiScrollNumber numScrollView;
     private MultiScrollNumber hourScrollView;
@@ -77,7 +79,9 @@ public class BusInfoItemView extends LinearLayout {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.view_bus_info_item, this);
-        mainLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
+        itemLayout = (CardView) view.findViewById(R.id.card_view_item);
+
+        busInfoLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
 
         nameTextView = (TextView) view.findViewById(R.id.text_view_name);
         numScrollView = (MultiScrollNumber) view.findViewById(R.id.scroll_number_num);
@@ -115,12 +119,12 @@ public class BusInfoItemView extends LinearLayout {
             numScrollView.setNumberFromLastVal(Integer.parseInt(info.getBusCustomiseNum().trim()), 4);
             hourScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()).trim().substring(0, 2)), 2);
             minuteScrollView.setNumberFromLastVal(Integer.parseInt(TimeUtil.hourMinuteFormat.format(info.getDepartureTime()).trim().substring(3, 5)), 2);
-            mainLayout.setVisibility(VISIBLE);
+            busInfoLayout.setVisibility(VISIBLE);
             adTextView.setVisibility(INVISIBLE);
             deleteOneOutdatedInfo();
         } else {
             lineName = null;
-            mainLayout.setVisibility(INVISIBLE);
+            busInfoLayout.setVisibility(INVISIBLE);
             adTextView.setVisibility(VISIBLE);
         }
     }
@@ -202,4 +206,8 @@ public class BusInfoItemView extends LinearLayout {
         this.interval = interval;
     }
 
+    @Override
+    public void setBackgroundColor(int color) {
+        itemLayout.setCardBackgroundColor(color);
+    }
 }
