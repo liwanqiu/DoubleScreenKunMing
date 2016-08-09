@@ -3,7 +3,6 @@ package com.changfeng.tcpdemo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -29,10 +28,9 @@ public class BusInfoView {
 
         SharedPreferences preferences = context.getSharedPreferences(SharedPref.name, Context.MODE_PRIVATE);
         String ad = preferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
-        int adFontSize = preferences.getInt(SharedPref.AD_FONT_SIZE, Constants.DEFAULT_AD_FONT_SIZE);
-        int itemCount = preferences.getInt(SharedPref.ITEM_COUNT, Constants.DEFAULT_ITEM_COUNT);
-        int itemInterval = preferences.getInt(SharedPref.ITEM_INTERVAL, Constants.DEFAULT_ITEM_INTERVAL);
-        int busFontSize = preferences.getInt(SharedPref.BUS_INFO_FONT_SIZE, Constants.DEFAULT_BUS_INFO_FONT_SIZE);
+        int itemNum = preferences.getInt(SharedPref.ITEM_NUM, Constants.DEFAULT_ITEM_NUM);
+        int itemInterval = preferences.getInt(SharedPref.BUS_INFO_SCROLL_INTERVAL, Constants.DEFAULT_BUS_INFO_SCROLL_INTERVAL);
+        int textSize = preferences.getInt(SharedPref.BUS_INFO_TEXT_SIZE, Constants.DEFAULT_BUS_INFO_TEXT_SIZE);
 
         int bgColor = ContextCompat.getColor(context, R.color.itemBgColor);
         int anotherBgColor = ContextCompat.getColor(context, R.color.itemAnotherBgColor);
@@ -41,7 +39,7 @@ public class BusInfoView {
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0);
         lp.weight = 1;
-        for (int i = 0; i < itemCount; i++) {
+        for (int i = 0; i < itemNum; i++) {
             BusInfoItemView view = new BusInfoItemView(context);
             if (i % 2 == 0) {
                 view.setBackgroundColor(bgColor);
@@ -49,7 +47,7 @@ public class BusInfoView {
                 view.setBackgroundColor(anotherBgColor);
             }
             view.setTextColor(fontColor);
-            view.setTextSize(busFontSize);
+            view.setTextSize(textSize);
 
             view.setInterval(itemInterval);
             view.setPadding(5, 2, 5, 2);
@@ -66,12 +64,6 @@ public class BusInfoView {
     }
 
     public void addBusInfo(BusInfo info) {
-
-//         // test
-//        if (!info.getLineName().equals("84路")) {
-//            return;
-//        }
-//
 
         if (busInfoList == null) {
             busInfoList = new ArrayList<>();

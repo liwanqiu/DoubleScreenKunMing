@@ -1,5 +1,6 @@
 package com.changfeng.tcpdemo;
 
+import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,7 +25,10 @@ public class WeatherManager {
     public static final String TAG = "WeatherManager";
     private static WeatherManager ourInstance = new WeatherManager();
 
-    public static WeatherManager getInstance() {
+    private Context context;
+
+    public static WeatherManager getInstance(Context context) {
+        ourInstance.context = context;
         return ourInstance;
     }
 
@@ -127,6 +131,7 @@ public class WeatherManager {
                                     listener.onMaxTemperatureChanged(tmp.getMax());
                                     listener.onMinTemperatureChanged(tmp.getMin());
                                     listener.onWindChanged(wind.getDir() + " " + wind.getSc());
+                                    listener.onSuggestion(((OnWeatherSuggestListener) context).onSuggest(cond.getTxt_d()));
                                 }
 
                             } catch (Exception e) {

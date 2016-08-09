@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_title"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_title"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_title_text_size"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <Spinner
+            android:id="@+id/spinner_title_text_size"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_ad"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_ad"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+    </LinearLayout>
+
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_device_id"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_device_id"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:maxLength="9"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_item_num"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <Spinner
+            android:id="@+id/spinner_item_num"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:textSize="@dimen/parameter_text_size" />
+
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_item_scroll_interval"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <Spinner
+            android:id="@+id/spinner_bus_info_scroll_interval"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:textSize="@dimen/parameter_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_bus_info_text_size"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <Spinner
+            android:id="@+id/spinner_bus_info_item_text_size"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_weather_interval"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/text_edit_weather_interval"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:maxLength="9"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+
+    </LinearLayout>
+
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="IP地址："
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_server"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="2"
+            android:digits="0123456789."
+            android:inputType="text"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="端口号："
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_server_port"
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="2"
+            android:inputType="number"
+            android:maxLength="5"
+            android:singleLine="true"
+            android:textSize="@dimen/parameter_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/SetParameterLayoutStyle"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="完成设置"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <Button
+            android:id="@+id/button_preview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_weight="1"
+            android:text="预览设置效果"
+            android:textSize="@dimen/parameter_text_size" />
+
+    </LinearLayout>
+
+</LinearLayout>

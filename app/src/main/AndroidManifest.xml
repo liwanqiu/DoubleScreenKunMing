@@ -41,22 +41,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SetParameterActivity"
+            android:name=".SettingsActivity"
             android:screenOrientation="landscape">
 
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:screenOrientation="landscape" />
 
         <activity
             android:name=".TestActivity"
             android:screenOrientation="landscape" />
         <activity
             android:name=".BusInfoActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".PreviewActivity"
             android:screenOrientation="landscape" />
         <!--注册广播接收器-->
         <receiver android:name=".BootStartApplication">
@@ -65,15 +59,6 @@
             </intent-filter>
 
         </receiver>
-        <!--<receiver android:name=".AutoUpdateApp">-->
-        <!--<intent-filter android:priority="1000">-->
-        <!--<action android:name="android.intent.action.MEDIA_MOUNTED"/>-->
-        <!--<action android:name="android.intent.action.MEDIA_UNMOUNTED"/>-->
-        <!--<data android:scheme="file"/>-->
-
-        <!--</intent-filter>-->
-        <!--</receiver>-->
-
 
     </application>
 

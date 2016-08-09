@@ -3,15 +3,22 @@ package com.changfeng.tcpdemo;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
+import android.view.textservice.TextInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.changfeng.tcpdemo.bean.Suggestion;
 import com.changfeng.tcpdemo.interf.OnWeatherChangedListener;
 import com.changfeng.tcpdemo.socketclient.helper.SocketResponsePacket;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by chang on 2016/7/25.
  */
-public class BusInfoActivity extends BaseActivity {
+public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestListener {
     public static final String TAG = "BusInfoActivity";
 
     @BindView(R.id.text_view_city)
@@ -43,16 +50,28 @@ public class BusInfoActivity extends BaseActivity {
     TextView minTemperatureTextView;
     @BindView(R.id.text_view_wind)
     TextView windTextView;
+    @BindView(R.id.text_view_suggestion)
+    TextView suggestionTextView;
+
+    private Gson gson = new GsonBuilder().serializeNulls().create();
+    private Suggestion weatherSuggestion;
+
 
     // 是否使用模拟数据
     public static final String EMULATE = "bus_info_activity_emulate";
 
 
-    private LinearLayout busInfoLayout;
+    @BindView(R.id.layout_bus_info)
+    LinearLayout busInfoLayout;
+
     private BusInfoView busInfoView;
-    private TextView companyInfoTextView;
-    private TextView currentTimeTextView;
-    private TextView tcpStateTextView;
+
+    @BindView(R.id.text_view_title)
+    TextView titleTextView;
+    @BindView(R.id.text_view_time)
+    TextView timeTextView;
+    @BindView(R.id.text_view_tcp_state)
+    TextView tcpStateTextView;
 
     private int tcpConnectedColor;
     private int tcpDisconnectedColor;
@@ -63,12 +82,34 @@ public class BusInfoActivity extends BaseActivity {
 
     private String serverAddress;
     private int serverPort;
-    private String deviceId;//设备ID
+    private String deviceId;
 
     private boolean isEmulate = false;
     private Timer emulateTimer;
     private TimerTask emulateTimerTask;
     private List<BusInfo> emulateBusInfoList;
+
+
+    @Override
+    public String onSuggest(String weather) {
+        // TODO: 2016/8/9
+        if (weatherSuggestion == null) {
+            try {
+                String suggestionFileName = Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
+                weatherSuggestion = gson.fromJson(FileUtils.getStringFromFile(suggestionFileName), Suggestion.class);
+            } catch (Exception e) {
+                Log.e(TAG, "onSuggest: ", e);
+                return "";
+            }
+        }
+
+        for (Suggestion.SuggestionBean s : weatherSuggestion.getSuggestion()) {
+            if (s.getWeather().equals(weather)) {
+                return s.getSuggestion();
+            }
+        }
+        return "";
+    }
 
     private SocketClient socketClient;
     private int reconnectInterval = 10;
@@ -163,6 +204,14 @@ public class BusInfoActivity extends BaseActivity {
             Log.i(TAG, "onWindChanged: " + wind);
             windTextView.setText(getString(R.string.wind, wind));
         }
+
+        @Override
+        public void onSuggestion(String suggestion) {
+            Log.i(TAG, "onSuggestion: " + suggestion);
+
+
+            suggestionTextView.setText(suggestion);
+        }
     };
 
     @Override
@@ -173,25 +222,23 @@ public class BusInfoActivity extends BaseActivity {
 
 
         SharedPreferences preferences = getSharedPreferences(SharedPref.name, MODE_PRIVATE);
+        String title = preferences.getString(SharedPref.TITLE, Constants.DEFAULT_TITLE);
+
         serverAddress = preferences.getString(SharedPref.SERVER_ADDRESS, Constants.DEFAULT_SERVER_ADDRESS);
         serverPort = preferences.getInt(SharedPref.SERVER_PORT, Constants.DEFAULT_SERVER_PORT);
-        int timeFontSize = preferences.getInt(SharedPref.TIME_FONT_SIZE, Constants.DEFAULT_TIME_FONT_SIZE);
+        int titleTextSize = preferences.getInt(SharedPref.TITLE_TEXT_SIZE, Constants.DEFAULT_TITLE_TEXT_SIZE);
 
         deviceId = preferences.getString(SharedPref.DEVICE_ID,
                 Constants.DEFAULT_DEVICE_ID);
         int fetchWeatherInterval = preferences.getInt(SharedPref.WEATHER_INTERVAL, Constants.DEFAULT_WEATHER_INTERVAL);
 
-        busInfoLayout = (LinearLayout) findViewById(R.id.layout_bus_info);
-
-        companyInfoTextView = (TextView) findViewById(R.id.text_view_company_info);
-        companyInfoTextView.setTextSize(timeFontSize);
-        currentTimeTextView = (TextView) findViewById(R.id.text_view_current_time);
-        currentTimeTextView.setTextSize(timeFontSize);
-        tcpStateTextView = (TextView) findViewById(R.id.text_view_tcp_state);
+        titleTextView.setText(title);
+        titleTextView.setTextSize(titleTextSize);
+        timeTextView.setTextSize(titleTextSize);
         busInfoView = new BusInfoView(this, busInfoLayout
         );
 
-        int weatherTextSize = timeFontSize / 2;
+        int weatherTextSize = titleTextSize / 2;
         cityTextView.setTextSize(weatherTextSize);
         qualityTextView.setTextSize(weatherTextSize);
         pm10TextView.setTextSize(weatherTextSize);
@@ -200,6 +247,8 @@ public class BusInfoActivity extends BaseActivity {
         maxTemperatureTextView.setTextSize(weatherTextSize);
         minTemperatureTextView.setTextSize(weatherTextSize);
         windTextView.setTextSize(weatherTextSize);
+        suggestionTextView.setTextSize(weatherTextSize);
+
         tcpConnectedColor = ContextCompat.getColor(this, R.color.tcp_connected);
         tcpConnectingColor = ContextCompat.getColor(this, R.color.tcp_connecting);
         tcpDisconnectedColor = ContextCompat.getColor(this, R.color.tcp_disconnected);
@@ -237,15 +286,15 @@ public class BusInfoActivity extends BaseActivity {
         }
 
         cityTextView.setText(getString(R.string.city));
-        WeatherManager.getInstance().registerWeatherChangeListener(weatherChangedListener);
-        WeatherManager.getInstance().setCityName(getString(R.string.city_en));
-        WeatherManager.getInstance().setFetchWeatherInterval(fetchWeatherInterval);
+        WeatherManager.getInstance(this).registerWeatherChangeListener(weatherChangedListener);
+        WeatherManager.getInstance(this).setCityName(getString(R.string.city_en));
+        WeatherManager.getInstance(this).setFetchWeatherInterval(fetchWeatherInterval);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        WeatherManager.getInstance().removeWeatherListener(weatherChangedListener);
+        WeatherManager.getInstance(this).removeWeatherListener(weatherChangedListener);
     }
 
     @Override
@@ -264,7 +313,7 @@ public class BusInfoActivity extends BaseActivity {
         }
         parser.stop();
 
-        WeatherManager.getInstance().stopWeatherFetchingTimer();
+        WeatherManager.getInstance(this).stopWeatherFetchingTimer();
     }
 
 
@@ -283,7 +332,7 @@ public class BusInfoActivity extends BaseActivity {
             connect();
         }
 
-        WeatherManager.getInstance().startWeatherFetchingTimer();
+        WeatherManager.getInstance(this).startWeatherFetchingTimer();
     }
 
     public void startTimer() {
@@ -295,7 +344,7 @@ public class BusInfoActivity extends BaseActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        currentTimeTextView.setText(TimeUtil.dateFormat.format(new Date()));
+                        timeTextView.setText(TimeUtil.dateFormat.format(new Date()));
                         if (socketClient != null) {
                             if (socketClient.isConnected()) {
                                 tcpStateTextView.setBackgroundColor(tcpConnectedColor);

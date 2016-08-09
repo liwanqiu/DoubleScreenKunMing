@@ -48,7 +48,7 @@ public class InitActivity extends BaseActivity {
         setParameter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startSetParameterActivity();
+                startSettingsActivity();
             }
         });
 
@@ -110,9 +110,9 @@ public class InitActivity extends BaseActivity {
         startActivity(new Intent(this, TestActivity.class));
     }
 
-    private void startSetParameterActivity() {
-        Log.i(TAG, "startSetParameterActivity: ");
-        startActivity(new Intent(this, SetParameterActivity.class));
+    private void startSettingsActivity() {
+        Log.i(TAG, "startSettingsActivity: ");
+        startActivity(new Intent(this, SettingsActivity.class));
     }
 
     private void startMainActivity() {
