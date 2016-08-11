@@ -119,6 +119,19 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
                 return s.getSuggestion();
             }
         }
+
+        for (Suggestion.SuggestionBean s : weatherSuggestion.getSuggestion()) {
+            if (weather.contains("雨") && s.getSuggestion().contains("雨")) {
+                return s.getSuggestion();
+            } else if(weather.contains("冰") && s.getSuggestion().contains("冰")) {
+                return s.getSuggestion();
+            } else if (weather.contains("雾") && s.getSuggestion().contains("雾")) {
+                return s.getSuggestion();
+            } else if(weather.contains("雪") && s.getSuggestion().contains("雪")) {
+                return s.getSuggestion();
+            }
+        }
+
         return "";
     }
 

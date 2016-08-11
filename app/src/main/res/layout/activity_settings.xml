@@ -182,23 +182,29 @@
 
     <LinearLayout
         style="@style/SetParameterLayoutStyle"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_ok"
-            android:layout_width="0dp"
+            android:id="@+id/button_suggestion"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="完成设置"
+            android:text="@string/button_suggestion"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/button_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_finish"
             android:textSize="@dimen/parameter_text_size" />
 
         <Button
             android:id="@+id/button_preview"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_weight="1"
-            android:text="预览设置效果"
+            android:text="@string/button_preview"
             android:textSize="@dimen/parameter_text_size" />
 
     </LinearLayout>

@@ -1,6 +1,5 @@
 package com.changfeng.tcpdemo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,7 +19,7 @@ import butterknife.OnClick;
  * Created by ${似水流年} on 2016/7/14.
  */
 public class SettingsActivity extends BaseActivity {
-    private static final String TAG = "SetParameterActivity";
+    private static final String TAG = "SettingsActivity";
 
     @BindView(R.id.spinner_item_num)
     Spinner itemNumSpinner;
@@ -42,6 +41,11 @@ public class SettingsActivity extends BaseActivity {
     EditText serverPortEditText;
     @BindView(R.id.text_edit_weather_interval)
     EditText weatherEditText;
+
+    @OnClick(R.id.button_suggestion)
+    void toSuggestion(View view) {
+        startActivity(new Intent(SettingsActivity.this, SuggestionActivity.class));
+    }
 
     @OnClick(R.id.button_preview)
     void toPreview(View view) {

@@ -20,6 +20,8 @@
     <string name="receive_data">接收字节数：%1$d</string>
 
 
+
+
     <!--天气-->
     <string name="city">昆明</string>
     <string name="city_en">kunming</string>
@@ -32,6 +34,15 @@
     <string name="wind">%1$s</string>
     <string name="suggestion">%1$s</string>
 
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="modify_suggestion">修改天气提示语</string>
+    <string name="delete_suggestion">删除此天气提示语</string>
+    <string name="message_save_success">保存成功</string>
+    <string name="message_save_failed">保存失败</string>
+    <string name="button_add">添加</string>
+    <string name="suggestion_edit_info">提示：点击提示语进行修改， 长按提示语进行删除</string>
+
     <!--设置-->
     <string name="label_item_num">线路数</string>
     <string name="label_item_scroll_interval">数据滚动周期</string>
@@ -43,7 +54,11 @@
     <string name="label_device_id">设备ID</string>
     <string name="button_settings">设置</string>
     <string name="button_test">测试</string>
+    <string name="button_suggestion">修改天气提示语</string>
+    <string name="button_finish">完成</string>
+    <string name="button_preview">预览</string>
     <string name="label_weather_interval">更新天气时间间隔（单位分钟）</string>
+
 
     <string name="message_copy_file_success">更新文件成功</string>
     <string name="message_copy_file_failed">复制文件失败:%1$s"</string>

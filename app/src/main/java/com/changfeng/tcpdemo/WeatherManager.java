@@ -110,9 +110,7 @@ public class WeatherManager {
                     @Override
                     public void onSuccess(int status, String responseString) {
                         Log.i("sdkdemo", "onSuccess() " + responseString);
-//                        mTextView.setText(responseString);
                         Weather weather = gson.fromJson(responseString.replace("HeWeather data service 3.0", "weather"), Weather.class);
-//                        Log.i(TAG, "onSuccess: " + gson.toJson(weather));
                         if (weather != null && listeners != null) {
                             try {
                                 Weather.WeatherBean w = weather.getWeather().get(0);
@@ -150,7 +148,6 @@ public class WeatherManager {
                     public void onError(int status, String responseString, Exception e) {
                         Log.i("sdkdemo", "onError, status: " + status);
                         Log.i("sdkdemo", "errMsg: " + (e == null ? "" : e.getMessage()));
-//                        mTextView.setText(getStackTrace(e));
                     }
 
                 });
