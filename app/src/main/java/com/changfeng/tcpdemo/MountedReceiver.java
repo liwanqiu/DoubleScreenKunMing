@@ -24,10 +24,15 @@ public class MountedReceiver extends BroadcastReceiver {
         int index = intent.getDataString().indexOf("///");
         String mountPath = intent.getDataString().substring(index + 2);
         if (intent.getAction().equals(Intent.ACTION_MEDIA_MOUNTED)) {
-            if (getElapsedTime() < 5000) {
+            if (getElapsedTime() < 50000) {
                 return;
             }
             String src = mountPath + File.separator + Constants.SUGGESTION_FILE_NAME;
+
+            if (!new File(src).exists()) {
+                return;
+            }
+
             String dst = Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
             try {
                 FileUtils.copyFileUsingFileChannels(new File(src), new File(dst));

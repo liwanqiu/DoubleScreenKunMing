@@ -29,8 +29,7 @@
     <string name="pm_10">PM10 %1$s</string>
     <string name="pm_25">PM2.5 %1$s</string>
     <string name="cond">昼 %1$s 夜 %2$s</string>
-    <string name="max_temperature">最高 %1$s℃</string>
-    <string name="min_temperature">最低 %1$s℃</string>
+    <string name="temperature">%1$s℃/%2$s℃</string>
     <string name="wind">%1$s</string>
     <string name="suggestion">%1$s</string>
 

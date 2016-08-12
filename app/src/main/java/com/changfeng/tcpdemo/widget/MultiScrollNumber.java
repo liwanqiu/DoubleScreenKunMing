@@ -56,6 +56,8 @@ public class MultiScrollNumber extends LinearLayout {
         setNumber(primaryNumber, targetNumber);
         setTextSize(numberSize);
 
+
+
         typedArray.recycle();
 
         setOrientation(HORIZONTAL);
@@ -122,8 +124,6 @@ public class MultiScrollNumber extends LinearLayout {
     private void resetView() {
         mTargetNumbers.clear();
         mPrimaryNumbers.clear();
-//        mScrollNumbers.clear();
-//        removeAllViews();
     }
 
 
@@ -140,7 +140,6 @@ public class MultiScrollNumber extends LinearLayout {
             number /= 10;
             count++;
         }
-        // operate from
         number = from;
         while (count > 0) {
             int i = number % 10;
@@ -169,11 +168,7 @@ public class MultiScrollNumber extends LinearLayout {
     }
 
     public void setNumber(int from, int to, int count, boolean forceflag) {
-//        if (to < from)
-//            throw new UnsupportedOperationException("'to' value must > 'from' value");
-
         resetView();
-//        Log.i(TAG, "setNumber:from: " + from + " to:" + to);
         // operate to
         int number = to;
         while (number > 0) {
@@ -200,6 +195,7 @@ public class MultiScrollNumber extends LinearLayout {
             ScrollNumber scrollNumber = new ScrollNumber(mContext);
             scrollNumber.setTextColor(mTextColors[0]);
             scrollNumber.setTextSize(mTextSize);
+            scrollNumber.setShadowLayer(2.0f, 3, 3, Color.BLACK);
             if (!TextUtils.isEmpty(mFontFileName))
                 scrollNumber.setTextFont(mFontFileName);
             mScrollNumbers.add(scrollNumber);

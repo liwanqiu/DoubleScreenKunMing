@@ -126,8 +126,7 @@ public class WeatherManager {
                                     listener.onPm25Changed(aqi.getCity().getPm25());
                                     listener.onPm10Changed(aqi.getCity().getPm10());
                                     listener.onCondChanged(cond.getTxt_d(), cond.getTxt_n());
-                                    listener.onMaxTemperatureChanged(tmp.getMax());
-                                    listener.onMinTemperatureChanged(tmp.getMin());
+                                    listener.onTemperatureChanged(tmp.getMax(), tmp.getMin());
                                     listener.onWindChanged(wind.getDir() + " " + wind.getSc());
                                     listener.onSuggestion(((OnWeatherSuggestListener) context).onSuggest(cond.getTxt_d(), cond.getTxt_n()));
                                 }

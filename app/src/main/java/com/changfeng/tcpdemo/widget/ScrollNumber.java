@@ -11,11 +11,14 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 /**
  * Created by wuhaojie on 2016/7/15 11:36.
  */
-public class ScrollNumber extends View {
+public class ScrollNumber extends TextView {
 
     private static final String TAG = "ScrollNumber";
 
@@ -177,7 +180,7 @@ public class ScrollNumber extends View {
             drawSelf(canvas);
             drawNext(canvas);
         } else {
-            canvas.drawText(mTargetNum + "", mTextCenterX, mTextHeight / 2 + getMeasuredHeight() / 2, mPaint);
+            canvas.drawText(mTargetNum + "", mTextCenterX, (int)(mTextHeight / 1.5) + getMeasuredHeight() / 2, mPaint);
         }
 //        if (mCurNum != mTargetNum) {
 //            invalidate();
@@ -220,7 +223,7 @@ public class ScrollNumber extends View {
     }
 
     private void drawSelf(Canvas canvas) {
-        int y = getMeasuredHeight() / 2;
+        int y = (int)(getMeasuredHeight() / 1.5);
         canvas.drawText(mCurNum + "", mTextCenterX, y + mTextHeight / 2, mPaint);
     }
 

@@ -15,9 +15,7 @@ public interface OnWeatherChangedListener {
 
     void onCondChanged(String day, String night);
 
-    void onMaxTemperatureChanged(String t);
-
-    void onMinTemperatureChanged(String t);
+    void onTemperatureChanged(String max, String min);
 
     void onWindChanged(String wind);
 

@@ -45,10 +45,8 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
     TextView pm10TextView;
     @BindView(R.id.text_view_cond)
     TextView condTextView;
-    @BindView(R.id.text_view_max_temperature)
-    TextView maxTemperatureTextView;
-    @BindView(R.id.text_view_min_temperature)
-    TextView minTemperatureTextView;
+    @BindView(R.id.text_view_temperature)
+    TextView temperatureTextView;
     @BindView(R.id.text_view_wind)
     TextView windTextView;
     @BindView(R.id.text_view_suggestion)
@@ -211,16 +209,9 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         }
 
         @Override
-        public void onMaxTemperatureChanged(String t) {
-            Log.i(TAG, "onMaxTemperatureChanged: " + t);
-            maxTemperatureTextView.setText(getString(R.string.max_temperature, t));
-
-        }
-
-        @Override
-        public void onMinTemperatureChanged(String t) {
-            Log.i(TAG, "onMinTemperatureChanged: " + t);
-            minTemperatureTextView.setText(getString(R.string.min_temperature, t));
+        public void onTemperatureChanged(String max, String min) {
+            Log.i(TAG, "onTemperatureChanged: " + max + " " + min);
+            temperatureTextView.setText(getString(R.string.temperature, max, min));
         }
 
         @Override
@@ -232,8 +223,6 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         @Override
         public void onSuggestion(String suggestion) {
             Log.i(TAG, "onSuggestion: " + suggestion);
-
-
             suggestionTextView.setText(suggestion);
         }
     };
@@ -268,8 +257,7 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         pm10TextView.setTextSize(weatherTextSize);
         pm25TextView.setTextSize(weatherTextSize);
         condTextView.setTextSize(weatherTextSize);
-        maxTemperatureTextView.setTextSize(weatherTextSize);
-        minTemperatureTextView.setTextSize(weatherTextSize);
+        temperatureTextView.setTextSize(weatherTextSize);
         windTextView.setTextSize(weatherTextSize);
         suggestionTextView.setTextSize(weatherTextSize);
 

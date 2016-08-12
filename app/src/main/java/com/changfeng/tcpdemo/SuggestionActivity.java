@@ -66,11 +66,11 @@ public class SuggestionActivity extends BaseActivity {
 
 
         try {
-            suggestionFileName = Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
-
+            suggestionFileName= Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
             weatherSuggestion = gson.fromJson(FileUtils.getStringFromFile(suggestionFileName), Suggestion.class);
             suggestions = weatherSuggestion.getSuggestion();
         } catch (Exception e) {
+            weatherSuggestion = new Suggestion();
             suggestions = new ArrayList<>();
             Log.e(TAG, "onCreate: ", e);
         }

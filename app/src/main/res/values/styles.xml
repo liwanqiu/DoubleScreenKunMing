@@ -25,4 +25,11 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="BusInfo">
+        <item name="android:shadowColor">@color/transparentGrey</item>
+        <item name="android:shadowRadius">5</item>
+        <item name="android:shadowDy">10</item>
+        <item name="android:shadowDx">10</item>
+    </style>
+
 </resources>
