@@ -91,6 +91,7 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
 
     @Override
     public String onSuggest(String dateWeather, String nightWeather) {
+        Log.i(TAG, "onSuggest: date:" + dateWeather + " night:" + nightWeather);
         if (weatherSuggestion == null) {
             try {
                 String suggestionFileName = Environment.getExternalStorageDirectory() + File.separator + Constants.SUGGESTION_FILE_NAME;
@@ -112,6 +113,8 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
             weather = dateWeather;
         }
 
+        Log.i(TAG, "onSuggest: weather:" + weather);
+
         for (Suggestion.SuggestionBean s : weatherSuggestion.getSuggestion()) {
             if (s.getWeather().trim().equals(weather)) {
                 return s.getSuggestion();
@@ -119,16 +122,18 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         }
 
         for (Suggestion.SuggestionBean s : weatherSuggestion.getSuggestion()) {
-            if (weather.contains("雨") && s.getSuggestion().contains("雨")) {
+            Log.i(TAG, "onSuggest: " + weather + " " + s.getWeather() + " " + s.getSuggestion());
+            if (weather.contains("雨") && s.getWeather().contains("雨")) {
                 return s.getSuggestion();
-            } else if(weather.contains("冰") && s.getSuggestion().contains("冰")) {
+            } else if(weather.contains("冰") && s.getWeather().contains("冰")) {
                 return s.getSuggestion();
-            } else if (weather.contains("雾") && s.getSuggestion().contains("雾")) {
+            } else if (weather.contains("雾") && s.getWeather().contains("雾")) {
                 return s.getSuggestion();
-            } else if(weather.contains("雪") && s.getSuggestion().contains("雪")) {
+            } else if(weather.contains("雪") && s.getWeather().contains("雪")) {
                 return s.getSuggestion();
             }
         }
+        Log.i(TAG, "onSuggest: " + weather);
 
         return "";
     }
