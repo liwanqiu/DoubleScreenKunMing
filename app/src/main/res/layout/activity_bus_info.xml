@@ -125,7 +125,7 @@
                     android:paddingStart="10dp">
 
                     <TextView
-                        android:background="@color/weatherColor"
+                        android:textColor="@color/weatherColor"
                         android:id="@+id/text_view_suggestion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
