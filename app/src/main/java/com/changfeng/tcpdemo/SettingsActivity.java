@@ -25,6 +25,8 @@ public class SettingsActivity extends BaseActivity {
     Spinner itemNumSpinner;
     @BindView(R.id.spinner_bus_info_item_text_size)
     Spinner busInfoItemTextSizeSpinner;
+    @BindView(R.id.edit_text_line_interval)
+    EditText lineIntervalEditText;
     @BindView(R.id.spinner_bus_info_scroll_interval)
     Spinner busInfoScrollIntervalSpinner;
     @BindView(R.id.spinner_title_text_size)
@@ -83,6 +85,9 @@ public class SettingsActivity extends BaseActivity {
 
         int busInfoTextSize = sharedPreferences.getInt(SharedPref.BUS_INFO_TEXT_SIZE,
                 Constants.DEFAULT_BUS_INFO_TEXT_SIZE);
+        int lineInterval = sharedPreferences.getInt(SharedPref.LINE_INTERVAL, Constants.DEFAULT_LINE_INTERVAL);
+        lineIntervalEditText.setText(String.valueOf(lineInterval));
+
         int busInfoScrollInterval = sharedPreferences.getInt(SharedPref.BUS_INFO_SCROLL_INTERVAL, Constants.DEFAULT_BUS_INFO_SCROLL_INTERVAL);
 
         String ad = sharedPreferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
@@ -203,6 +208,8 @@ public class SettingsActivity extends BaseActivity {
 
         editor.putInt(SharedPref.BUS_INFO_TEXT_SIZE, Integer.parseInt(busInfoItemTextSizeSpinner
                 .getSelectedItem().toString()));
+
+        editor.putInt(SharedPref.LINE_INTERVAL, Integer.parseInt(lineIntervalEditText.getText().toString()));
 
         editor.putInt(SharedPref.TITLE_TEXT_SIZE, Integer.parseInt(titleTextSizeSpinner
                 .getSelectedItem().toString()));

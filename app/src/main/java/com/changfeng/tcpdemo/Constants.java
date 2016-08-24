@@ -15,6 +15,7 @@ public class Constants {
     public static final int DEFAULT_BUS_INFO_SCROLL_INTERVAL = 6;
     public static final String DEFAULT_TITLE = "昆明公交总公司站点发车信息屏";
     public static final int DEFAULT_BUS_INFO_TEXT_SIZE = 80;
+    public static final int DEFAULT_LINE_INTERVAL = 10;
     public static final int DEFAULT_TITLE_TEXT_SIZE = 30;
     public static final String DEFAULT_DEVICE_ID = "871997";
     public static final int DEFAULT_SERVER_PORT = 50000;

@@ -312,6 +312,7 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
     protected void onDestroy() {
         super.onDestroy();
         WeatherManager.getInstance(this).removeWeatherListener(weatherChangedListener);
+        busInfoView.close();
     }
 
     @Override

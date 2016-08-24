@@ -19,8 +19,10 @@
     <string name="server_disconnected">服务器已经断开 地址：%1$s 端口：%2$d</string>
     <string name="receive_data">接收字节数：%1$d</string>
 
-
-
+    <string name="default_line_name">----</string>
+    <string name="default_line_num">----</string>
+    <string name="default_time">--:--</string>
+    <string name="time_separator">:</string>
 
     <!--天气-->
     <string name="city">昆明</string>
@@ -46,6 +48,7 @@
     <string name="label_item_num">线路数</string>
     <string name="label_item_scroll_interval">数据滚动周期</string>
     <string name="label_bus_info_text_size">车辆信息字体大小</string>
+    <string name="label_line_interval">每条线路显示时间（秒）</string>
     <string name="label_title_text_size">标题字体大小</string>
     <string name="label_title">标题</string>
     <string name="label_ad_text_size">宣传语字体大小</string>
@@ -56,7 +59,7 @@
     <string name="button_suggestion">修改天气提示语</string>
     <string name="button_finish">完成</string>
     <string name="button_preview">预览</string>
-    <string name="label_weather_interval">更新天气时间间隔（单位分钟）</string>
+    <string name="label_weather_interval">更新天气时间间隔（分钟）</string>
 
 
     <string name="message_copy_file_success">更新文件成功</string>

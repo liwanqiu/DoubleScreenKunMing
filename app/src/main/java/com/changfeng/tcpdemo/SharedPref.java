@@ -18,6 +18,7 @@ public class SharedPref {
     public static final String TITLE = "title";
     public static final String TITLE_TEXT_SIZE = "title_font_size";
     public static final String WEATHER_INTERVAL = "weather_interval";
+    public static final String LINE_INTERVAL ="line_interval";
 
 
 }

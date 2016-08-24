@@ -1,13 +1,17 @@
 package com.changfeng.tcpdemo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by chang on 2016/7/25.
@@ -20,7 +24,12 @@ public class BusInfoView {
 
     private List<BusInfoItemView> itemViews = new ArrayList<>();
 
-    private List<BusInfo> busInfoList;
+//    private List<BusInfo> busInfoList;
+
+    private List<LineInfo> lineInfoList;
+
+    private Timer timer;
+    private TimerTask timerTask;
 
     public BusInfoView(Context context, LinearLayout layout) {
         this.context = context;
@@ -50,63 +59,148 @@ public class BusInfoView {
             view.setTextSize(textSize);
 
             view.setInterval(itemInterval);
-            view.setPadding(5, 2, 5, 2);
-
             view.setDelay((i + 1) * 500);
 
-            view.setAd(ad);
             itemViews.add(view);
             layout.addView(view, lp);
-            view.start();
-
         }
+
+        startTimer();
 
     }
 
     public void addBusInfo(BusInfo info) {
-
-        if (busInfoList == null) {
-            busInfoList = new ArrayList<>();
+        if (lineInfoList == null) {
+            lineInfoList = new ArrayList<>();
         }
 
-        // 删除已经存在同一自编号的记录
-        for (BusInfo busInfo : busInfoList) {
-            if (info.getBusCustomiseNum().equals(busInfo.getBusCustomiseNum())) {
-                busInfoList.remove(busInfo);
-                for (BusInfoItemView view : itemViews) {
-                    view.deleteInfo(busInfo);
-                }
-                break;
-            }
-        }
-
-        boolean found = false;
         boolean added = false;
-        for (BusInfoItemView view : itemViews) {
-            if (view.getLineName() != null && view.getLineName().equals(info.getLineName())) {
-                view.addBusInfo(info);
-                found = true;
+        for (LineInfo lineInfo : lineInfoList) {
+            if (lineInfo.getLineName().equals(info.getLineName())) {
+                lineInfo.addBusInfo(info);
                 added = true;
             }
         }
 
-        if (!found) {
-            for (BusInfoItemView view : itemViews) {
-                if (view.getLineName() == null) {
-                    view.addBusInfo(info);
-                    added = true;
+        if (!added) {
+            LineInfo lineInfo = new LineInfo();
+            lineInfo.addBusInfo(info);
+            lineInfoList.add(lineInfo);
+        }
+
+//        if (busInfoList == null) {
+//            busInfoList = new ArrayList<>();
+//        }
+//
+//        // 删除已经存在同一自编号的记录
+//        for (BusInfo busInfo : busInfoList) {
+//            if (info.getBusCustomiseNum().equals(busInfo.getBusCustomiseNum())) {
+//                busInfoList.remove(busInfo);
+//                for (BusInfoItemView view : itemViews) {
+//                    view.deleteInfo(busInfo);
+//                }
+//                break;
+//            }
+//        }
+//
+//        boolean found = false;
+//        boolean added = false;
+//        for (BusInfoItemView view : itemViews) {
+//            if (view.getLineName() != null && view.getLineName().equals(info.getLineName())) {
+//                view.addBusInfo(info);
+//                found = true;
+//                added = true;
+//            }
+//        }
+//
+//        if (!found) {
+//            for (BusInfoItemView view : itemViews) {
+//                if (view.getLineName() == null) {
+//                    view.addBusInfo(info);
+//                    added = true;
+//                    break;
+//                }
+//            }
+//        }
+//
+//        if (added) {
+//            busInfoList.add(info);
+//        } else {
+//            // TODO: 2016/7/27  当Item 数目小于 线路数目，处理
+//        }
+
+
+    }
+
+    public void close() {
+        stopTimer();
+    }
+
+    private Runnable updateViewRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (lineInfoList == null || lineInfoList.isEmpty()) {
+                return;
+            }
+
+            LineInfo lineInfo = getNextLineInfo();
+
+            for (int i = 0; i < itemViews.size(); ++i) {
+                if (i < lineInfo.getBusInfoList().size()) {
+                    itemViews.get(i).setBusInfo(lineInfo.getBusInfoList().get(i));
+                } else {
+                    itemViews.get(i).clearWithLineName(lineInfo.getLineName());
+
+                }
+
+            }
+
+
+            for (int i = 0; i < lineInfo.getBusInfoList().size(); ++i) {
+                if (i > itemViews.size() - 1) {
                     break;
                 }
+
+                itemViews.get(i).setBusInfo(lineInfo.getBusInfoList().get(i));
             }
         }
+    };
 
-        if (added) {
-            busInfoList.add(info);
-        } else {
-            // TODO: 2016/7/27  当Item 数目小于 线路数目，处理
+
+    private int currentLineInfoIndex = 0;
+
+    private LineInfo getNextLineInfo() {
+        if (currentLineInfoIndex > lineInfoList.size() - 1) {
+            currentLineInfoIndex = 0;
         }
+        return lineInfoList.get(currentLineInfoIndex++);
+    }
 
+    public void startTimer() {
+        stopTimer();
+        timer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Log.i(TAG, "run: ");
+                ((Activity)context).runOnUiThread(
+                        updateViewRunnable
+                );
+            }
+        };
+        SharedPreferences sharedPref = context.getSharedPreferences(SharedPref.name, Context.MODE_PRIVATE);
+        int interval = sharedPref.getInt(SharedPref.LINE_INTERVAL, Constants.DEFAULT_LINE_INTERVAL);
+        timer.schedule(timerTask, 1000, interval * 1000);
 
+    }
+
+    public void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+        if (timerTask != null) {
+            timerTask.cancel();
+        }
     }
 
 

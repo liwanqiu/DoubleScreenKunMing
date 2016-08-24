@@ -125,6 +125,22 @@
 
     </LinearLayout>
 
+    <LinearLayout style="@style/SetParameterLayoutStyle">
+
+        <TextView
+            style="@style/SetParameterViewStyle"
+            android:layout_weight="1"
+            android:text="@string/label_line_interval"
+            android:textSize="@dimen/parameter_text_size" />
+
+        <EditText
+            android:id="@+id/edit_text_line_interval"
+            style="@style/SetParameterViewStyle"
+            android:inputType="number"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
 
     <LinearLayout style="@style/SetParameterLayoutStyle">
 
