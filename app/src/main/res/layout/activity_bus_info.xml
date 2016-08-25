@@ -32,16 +32,16 @@
                 android:orientation="vertical">
 
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/company_info_padding">
 
                     <TextView
+                        android:layout_alignParentStart="true"
                         android:id="@+id/text_view_title"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="3"
                         android:gravity="start"
                         android:shadowColor="@color/green01"
                         android:shadowDx="3"
@@ -51,16 +51,17 @@
                         android:textSize="@dimen/company_info_font_size" />
 
                     <TextView
+                        android:layout_alignParentEnd="true"
                         android:id="@+id/text_view_time"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
                         android:gravity="end"
                         android:textColor="@color/currentTimeTextColor"
                         android:textSize="@dimen/current_time_font_size" />
-                </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingEnd="10dp"
@@ -119,18 +120,34 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="10dp"
-                    android:paddingStart="10dp">
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <TextView
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:ellipsize="marquee"
+                        android:lines="1"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:gravity="start"
+                        android:id="@+id/text_view_weather"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:ellipsize="marquee"
+                        android:lines="1"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:layout_weight="1"
+                        android:gravity="start"
                         android:textColor="@color/weatherColor"
                         android:id="@+id/text_view_suggestion"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="10dp"
-                        android:paddingStart="10dp" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
             </LinearLayout>

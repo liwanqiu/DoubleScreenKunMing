@@ -38,7 +38,8 @@
 
     </LinearLayout>
 
-    <LinearLayout style="@style/SetParameterLayoutStyle">
+    <LinearLayout style="@style/SetParameterLayoutStyle"
+        android:visibility="gone">
 
         <TextView
             style="@style/SetParameterViewStyle"

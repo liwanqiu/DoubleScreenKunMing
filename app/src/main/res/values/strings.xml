@@ -34,6 +34,7 @@
     <string name="temperature">%1$s℃/%2$s℃</string>
     <string name="wind">%1$s</string>
     <string name="suggestion">%1$s</string>
+    <string name="weather">空气质量 %1$s PM2.5 %2$s PM10 %3$s 昼 %4$s 夜 %5$s %6$s℃/%7$s℃ %8$s</string>
 
     <string name="ok">确定</string>
     <string name="cancel">取消</string>

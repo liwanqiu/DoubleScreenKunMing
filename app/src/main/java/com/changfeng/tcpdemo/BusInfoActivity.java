@@ -49,6 +49,8 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
     TextView temperatureTextView;
     @BindView(R.id.text_view_wind)
     TextView windTextView;
+    @BindView(R.id.text_view_weather)
+    TextView weatherTextView;
     @BindView(R.id.text_view_suggestion)
     TextView suggestionTextView;
 
@@ -226,6 +228,12 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         }
 
         @Override
+        public void onWeatherChanged(String weather) {
+            Log.i(TAG, "onWeatherChanged: " + weather);
+            weatherTextView.setText(weather);
+        }
+
+        @Override
         public void onSuggestion(String suggestion) {
             Log.i(TAG, "onSuggestion: " + suggestion);
             suggestionTextView.setText(suggestion);
@@ -264,7 +272,15 @@ public class BusInfoActivity extends BaseActivity implements OnWeatherSuggestLis
         condTextView.setTextSize(weatherTextSize);
         temperatureTextView.setTextSize(weatherTextSize);
         windTextView.setTextSize(weatherTextSize);
+
+        weatherTextView.setTextSize(weatherTextSize);
         suggestionTextView.setTextSize(weatherTextSize);
+
+        weatherTextView.setSelected(true);
+        weatherTextView.setHorizontallyScrolling(true);
+
+        suggestionTextView.setSelected(true);
+        suggestionTextView.setHorizontallyScrolling(true);
 
         tcpConnectedColor = ContextCompat.getColor(this, R.color.tcp_connected);
         tcpConnectingColor = ContextCompat.getColor(this, R.color.tcp_connecting);

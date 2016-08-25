@@ -5,6 +5,7 @@
     >
 
     <ImageView
+        android:id="@+id/image_view_splash"
         android:src="@drawable/splash"
         android:scaleType="fitXY"
         android:layout_width="match_parent"

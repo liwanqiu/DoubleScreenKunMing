@@ -19,6 +19,8 @@ public interface OnWeatherChangedListener {
 
     void onWindChanged(String wind);
 
+    void onWeatherChanged(String weather);
+
     void onSuggestion(String suggestion);
 
 
