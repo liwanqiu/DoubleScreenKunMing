@@ -19,9 +19,9 @@
     <string name="server_disconnected">服务器已经断开 地址：%1$s 端口：%2$d</string>
     <string name="receive_data">接收字节数：%1$d</string>
 
-    <string name="default_line_name">----</string>
-    <string name="default_line_num">----</string>
-    <string name="default_time">--:--</string>
+    <string name="default_line_name">- - - -</string>
+    <string name="default_line_num">- - - -</string>
+    <string name="default_time">- -:- -</string>
     <string name="time_separator">:</string>
 
     <!--天气-->
@@ -46,7 +46,7 @@
     <string name="suggestion_edit_info">提示：点击提示语进行修改， 长按提示语进行删除</string>
 
     <!--设置-->
-    <string name="label_item_num">线路数</string>
+    <string name="label_item_num">显示车辆数</string>
     <string name="label_item_scroll_interval">数据滚动周期</string>
     <string name="label_bus_info_text_size">车辆信息字体大小</string>
     <string name="label_line_interval">每条线路显示时间（秒）</string>

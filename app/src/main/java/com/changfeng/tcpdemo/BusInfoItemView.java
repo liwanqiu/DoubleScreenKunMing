@@ -28,6 +28,7 @@ public class BusInfoItemView extends LinearLayout {
     public static final String TAG = "BusInfoItemView";
 
     private CardView itemLayout;
+    private LinearLayout backgroundLayout;
     private LinearLayout busInfoLayout;
     private TextView nameTextView;
     private MultiScrollNumber numScrollView;
@@ -89,6 +90,7 @@ public class BusInfoItemView extends LinearLayout {
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.view_bus_info_item, this);
         itemLayout = (CardView) view.findViewById(R.id.card_view_item);
 
+        backgroundLayout = (LinearLayout)view.findViewById(R.id.layout_item_background);
         busInfoLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
 
         nameTextView = (TextView) view.findViewById(R.id.text_view_name);
@@ -237,6 +239,17 @@ public class BusInfoItemView extends LinearLayout {
 
     @Override
     public void setBackgroundColor(int color) {
+//        itemLayout.setCardBackgroundColor(color);
+        busInfoLayout.setBackgroundColor(color);
+    }
+
+    public void setItemLayoutBackgroundColor(int color) {
         itemLayout.setCardBackgroundColor(color);
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        backgroundLayout.setPadding(left,top,right,bottom);
     }
 }

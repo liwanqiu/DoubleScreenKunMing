@@ -8,19 +8,15 @@
     <dimen name="company_info_font_size">15sp</dimen>
     <dimen name="current_time_font_size">15sp</dimen>
     <dimen name="company_info_padding">16dp</dimen>
-    <!--//表头信息的相关设置(取消)-->
-    <!--<dimen name="header_font_size">60sp</dimen>-->
-    <!--<dimen name="header_max_height">300sp</dimen>-->
-    <!--<dimen name="brand_kunming_font_size_default">50sp</dimen>-->
-    //广告内容
+    <!--//广告内容-->
     <dimen name="ad_font_size_default">20sp</dimen>
     <!--<dimen name="ad_text_space">2.0</dimen>-->
-    //车辆信息显示
+    <!--//车辆信息显示-->
     <dimen name="bus_info_font_size">15sp</dimen>
-    //初始设置界面的参数
+    <!--//初始设置界面的参数-->
     <dimen name="preview_text_size">15sp</dimen>
     <dimen name="parameter_text_size">15sp</dimen>
-    //四个翻牌数字的显示,采用车辆信息的相关参数
+    <!--//四个翻牌数字的显示,采用车辆信息的相关参数-->
     <dimen name="auto_padding">0dp</dimen>
 
 

@@ -36,13 +36,14 @@ public class BusInfoView {
         this.layout = layout;
 
         SharedPreferences preferences = context.getSharedPreferences(SharedPref.name, Context.MODE_PRIVATE);
-        String ad = preferences.getString(SharedPref.AD, Constants.DEFAULT_AD);
         int itemNum = preferences.getInt(SharedPref.ITEM_NUM, Constants.DEFAULT_ITEM_NUM);
         int itemInterval = preferences.getInt(SharedPref.BUS_INFO_SCROLL_INTERVAL, Constants.DEFAULT_BUS_INFO_SCROLL_INTERVAL);
         int textSize = preferences.getInt(SharedPref.BUS_INFO_TEXT_SIZE, Constants.DEFAULT_BUS_INFO_TEXT_SIZE);
 
         int bgColor = ContextCompat.getColor(context, R.color.itemBgColor);
         int anotherBgColor = ContextCompat.getColor(context, R.color.itemAnotherBgColor);
+        int itemLayoutBackgroundColor = ContextCompat.getColor(context,R.color.itemLayoutBackgroundColor);
+
 
         int fontColor = ContextCompat.getColor(context, R.color.itemFontColor);
 
@@ -52,8 +53,11 @@ public class BusInfoView {
             BusInfoItemView view = new BusInfoItemView(context);
             if (i % 2 == 0) {
                 view.setBackgroundColor(bgColor);
+                view.setItemLayoutBackgroundColor(itemLayoutBackgroundColor);
+                view.setPadding(0,5,0,5);
             } else {
                 view.setBackgroundColor(anotherBgColor);
+                view.setItemLayoutBackgroundColor(anotherBgColor);
             }
             view.setTextColor(fontColor);
             view.setTextSize(textSize);
