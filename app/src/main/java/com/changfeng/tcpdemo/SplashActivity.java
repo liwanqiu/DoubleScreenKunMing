@@ -3,11 +3,7 @@ package com.changfeng.tcpdemo;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.widget.ImageView;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -16,13 +12,10 @@ import butterknife.OnClick;
  */
 public class SplashActivity extends BaseActivity {
 
-    public static final int DELAY = 5;
-
-    @BindView(R.id.image_view_splash)
-    ImageView splashImageView;
+    public static final int DELAY = 4;
 
     @OnClick(R.id.button_settings)
-    void toSettins(View view) {
+    void toSettings(View view) {
         redirectTo(InitActivity.class);
     }
 
@@ -32,13 +25,13 @@ public class SplashActivity extends BaseActivity {
         View view = View.inflate(this, R.layout.activity_splash, null);
         setContentView(view);
         ButterKnife.bind(this);
-        showAnimation();
+//        showAnimation();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-//        handler.postDelayed(runnable, DELAY * 1000);
+        handler.postDelayed(runnable, DELAY * 1000);
     }
 
     Runnable runnable = new Runnable() {
@@ -65,27 +58,27 @@ public class SplashActivity extends BaseActivity {
         finish();
     }
 
-    private void showAnimation() {
-        Animation a = new AlphaAnimation(0.0f, 1.0f);
-        a.setDuration(DELAY * 1000);
-        splashImageView.setAnimation(a);
-
-        a.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                startBusInfoActivity();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-    }
+//    private void showAnimation() {
+//        Animation a = new AlphaAnimation(0.0f, 1.0f);
+//        a.setDuration(DELAY * 1000);
+//        splashImageView.setAnimation(a);
+//
+//        a.setAnimationListener(new Animation.AnimationListener() {
+//            @Override
+//            public void onAnimationStart(Animation animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                startBusInfoActivity();
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animation animation) {
+//
+//            }
+//        });
+//    }
 
 }
