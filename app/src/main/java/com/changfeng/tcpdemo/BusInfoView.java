@@ -52,12 +52,14 @@ public class BusInfoView {
         for (int i = 0; i < itemNum; i++) {
             BusInfoItemView view = new BusInfoItemView(context);
             if (i % 2 == 0) {
-                view.setBackgroundColor(bgColor);
-                view.setItemLayoutBackgroundColor(itemLayoutBackgroundColor);
-                view.setPadding(0,5,0,5);
+                view.setBackground(ContextCompat.getDrawable(context,R.drawable.item_background_4));
+//                view.setBackgroundColor(bgColor);
+//                view.setItemLayoutBackgroundColor(itemLayoutBackgroundColor);
+//                view.setPadding(0,5,0,5);
             } else {
-                view.setBackgroundColor(anotherBgColor);
-                view.setItemLayoutBackgroundColor(anotherBgColor);
+                view.setBackground(ContextCompat.getDrawable(context, R.drawable.item_background_5));
+//                view.setBackgroundColor(anotherBgColor);
+//                view.setItemLayoutBackgroundColor(anotherBgColor);
             }
             view.setTextColor(fontColor);
             view.setTextSize(textSize);

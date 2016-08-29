@@ -1,8 +1,6 @@
 package com.changfeng.tcpdemo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,15 +9,9 @@ import android.widget.TextView;
 
 import com.changfeng.tcpdemo.widget.MultiScrollNumber;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by chang on 2016/7/25.
@@ -27,8 +19,8 @@ import butterknife.ButterKnife;
 public class BusInfoItemView extends LinearLayout {
     public static final String TAG = "BusInfoItemView";
 
-    private CardView itemLayout;
-    private LinearLayout backgroundLayout;
+//    private CardView itemLayout;
+//    private LinearLayout backgroundLayout;
     private LinearLayout busInfoLayout;
     private TextView nameTextView;
     private MultiScrollNumber numScrollView;
@@ -88,9 +80,9 @@ public class BusInfoItemView extends LinearLayout {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         LinearLayout view = (LinearLayout) inflater.inflate(R.layout.view_bus_info_item, this);
-        itemLayout = (CardView) view.findViewById(R.id.card_view_item);
+//        itemLayout = (CardView) view.findViewById(R.id.card_view_item);
 
-        backgroundLayout = (LinearLayout)view.findViewById(R.id.layout_item_background);
+//        backgroundLayout = (LinearLayout)view.findViewById(R.id.layout_item_background);
         busInfoLayout = (LinearLayout) view.findViewById(R.id.layout_bus_info_item);
 
         nameTextView = (TextView) view.findViewById(R.id.text_view_name);
@@ -237,19 +229,19 @@ public class BusInfoItemView extends LinearLayout {
         this.interval = interval;
     }
 
-    @Override
-    public void setBackgroundColor(int color) {
-//        itemLayout.setCardBackgroundColor(color);
-        busInfoLayout.setBackgroundColor(color);
-    }
+//    @Override
+//    public void setBackgroundColor(int color) {
+////        itemLayout.setCardBackgroundColor(color);
+////        busInfoLayout.setBackgroundColor(color);
+//    }
 
-    public void setItemLayoutBackgroundColor(int color) {
-        itemLayout.setCardBackgroundColor(color);
-    }
+//    public void setItemLayoutBackgroundColor(int color) {
+////        itemLayout.setCardBackgroundColor(color);
+//    }
 
-    @Override
-    public void setPadding(int left, int top, int right, int bottom) {
-        super.setPadding(left, top, right, bottom);
-        backgroundLayout.setPadding(left,top,right,bottom);
-    }
+//    @Override
+//    public void setPadding(int left, int top, int right, int bottom) {
+//        super.setPadding(left, top, right, bottom);
+////        backgroundLayout.setPadding(left,top,right,bottom);
+//    }
 }
